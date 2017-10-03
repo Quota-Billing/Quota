@@ -23,7 +23,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <configuration>
-                    <mainClass>edu.rosehulman.quota.App</mainClass>
+                    <mainClass>edu.rosehulman.quota.Application</mainClass>
                 </configuration>
             </plugin>
         </plugins>
