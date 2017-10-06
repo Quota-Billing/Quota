@@ -19,7 +19,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @PrepareForTest({Database.class, Request.class, Response.class})
 public class AddUserControllerTest {
 
-  @Test
+  /*@Test
   public void testAddUser() throws Exception {
     mockStatic(Database.class);
     Database database = Mockito.mock(Database.class);
@@ -38,5 +38,5 @@ public class AddUserControllerTest {
     
     assertEquals(200, actualResponse.status());
 
-  }
+  }*/
 }
