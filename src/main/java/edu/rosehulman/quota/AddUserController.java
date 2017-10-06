@@ -1,4 +1,4 @@
 package edu.rosehulman.quota;
 
-public class AddUserController {
+public class AddUserController {  
 }
