@@ -20,8 +20,12 @@ public class Database {
     }
     return instance;
   }
-  
+
   public void addUser(String partnerId, String productId, String userId) {
     db.get(partnerId).get(productId).add(userId);
+  }
+
+  public Quota getQuota(String partnerId, String productId, String userId, String quotaId) {
+    return null; // TODO: This is just mocked in tests
   }
 }

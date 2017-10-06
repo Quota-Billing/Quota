@@ -9,6 +9,10 @@ public class Application {
     port(8080);
 
     get("/health", (request, response) -> "OK");
+
     post(Paths.ADD_USER, new AddUserController()); // Consume an AddUser call from SDK/partner
+
+    // Billing calls this endpoint
+    get("/partner/:partnerId/product/:productId/user/:userId/GetQuota/:quotaId", new GetQuotaController());
   }
 }
