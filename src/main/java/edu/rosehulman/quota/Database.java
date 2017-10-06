@@ -124,4 +124,12 @@ public class Database {
 	public Partner getPartner(String id) {
 		return this.partnerMap.get(id);
 	}
+	
+	// TODO fix inconsistencies with quota.  Is a user needed?
+	public Quota getQuota(String partnerId, String productId, String userId, String quotaId) {	
+		return null;
+		//return partnerMap.get(partnerId).getProduct(productId).getUser(userId).getQuota(quotaId);
+	}
+	
+	
 }

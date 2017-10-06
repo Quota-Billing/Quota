@@ -8,5 +8,8 @@ public class Application {
     port(8080);
 
     get("/health", (request, response) -> "OK");
+
+    // Billing calls this endpoint
+    get("/partner/:partnerId/product/:productId/user/:userId/GetQuota/:quotaId", new GetQuotaController());
   }
 }

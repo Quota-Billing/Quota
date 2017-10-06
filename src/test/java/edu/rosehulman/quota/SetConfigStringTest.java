@@ -1,4 +1,4 @@
-package edu.rosehulman.quota.test;
+package edu.rosehulman.quota;
 
 import static org.junit.Assert.*;
 

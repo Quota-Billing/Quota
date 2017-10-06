@@ -31,5 +31,10 @@ public class Product {
 		}
 		return toReturn;
 	}
+
+	/*public User getUser(String userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
 	
 }

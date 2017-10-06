@@ -27,5 +27,9 @@ public class Partner {
 		
 	}
 	
+	public Product getProduct(String productId) {
+		return this.productMap.get(productId);
+	}
+	
 	
 }
