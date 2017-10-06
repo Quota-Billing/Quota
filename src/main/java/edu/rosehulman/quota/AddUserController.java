@@ -12,13 +12,17 @@ public class AddUserController implements Route {
     String productId = request.params(":productId");
     String userId = request.params(":userId");
 
-    // Add the user to our database
-    Database.getInstance().addUser(partnerId, productId, userId);
+    try {
+      // Add the user to our database
+      Database.getInstance().addUser(partnerId, productId, userId);
+    } catch(Exception e) {
+      response.status(500);
+      return response;
+    }
 
     // Send the user to Shared
-//    SharedServiceClient.getInstance().addUser(partnerId, productId, userId);
+//    Response sharedRes = SharedServiceClient.getInstance().addUser(partnerId, productId, userId);
 
-    // Return to caller a success
-    return "successfully added " + userId;
+    return response; // Change to sharedRes once implemented
   }
 }
