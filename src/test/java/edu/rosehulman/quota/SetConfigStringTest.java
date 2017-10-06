@@ -95,7 +95,42 @@ public class SetConfigStringTest {
 	
 	@Test
 	public void testVaried() {
+		Database db = Database.getInstance();
+		db.setConfig("{\r\n" + 
+				"			'partnerId':'1',\r\n" + 
+				"			'apiKey':'idk',\r\n" + 
+				"			'products': [\r\n" + 
+				"				{\r\n" + 
+				"					'productId':'9',\r\n" + 
+				"					'quotas': [\r\n" + 
+				"						{\r\n" + 
+				"							'quotaId':'12'\r\n" +  
+				"						}\r\n" + 
+				"					]\r\n" + 
+				"				},\r\n" + 
+				"				{\r\n" + 
+				"					'productId':'7',\r\n" + 
+				"					'quotas': [\r\n" + 
+				"						{\r\n" + 
+				"							'quotaId':'6'\r\n" +  
+				"						},\r\n" + 
+				"						{\r\n" + 
+				"							'quotaId':'7'\r\n" +  
+				"						}\r\n" + 
+				"					]\r\n" + 
+				"				}\r\n" + 
+				"			]\r\n" + 
+				"		}");
+		// order not guaranteed
+		String actual = db.getPartner("\"1\"").toString().trim();
 		
+		assertTrue(actual.contains("Partner: \"1\""));
+		assertTrue(actual.contains("Product: \"9\""));
+		assertTrue(actual.contains("Quota: \"12\""));
+		assertTrue(actual.contains("Product: \"7\""));
+		assertTrue(actual.contains("Quota: \"6\""));
+		assertTrue(actual.contains("Quota: \"7\""));
+
 	}
 	
 	

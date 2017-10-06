@@ -94,7 +94,7 @@ public class Database {
 	    Partner configPartner = new Partner(partnerId);
 	    
 	    // TODO what to do with this?
-	    String apiKey = jobject.get("apiKey").toString();
+	    //String apiKey = jobject.get("apiKey").toString();
 	    JsonArray productArray = jobject.getAsJsonArray("products");
 	    
 	    

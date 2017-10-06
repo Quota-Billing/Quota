@@ -2,7 +2,6 @@ package edu.rosehulman.quota;
 
 import java.util.HashMap;
 
-import com.google.gson.JsonElement;
 
 public class Product {
 
