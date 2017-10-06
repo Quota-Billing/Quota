@@ -25,7 +25,15 @@ public class Database {
 	
 	// testing
 	public static void main(String args[]) {
-		getInstance().setConfig("{\r\n" + 
+		Database db = Database.getInstance();
+		db.setConfig("{\r\n" + 
+				"			'partnerId':'1',\r\n" + 
+				"			'apiKey':'idk',\r\n" + 
+				"			'products': [\r\n" + 
+				"			]\r\n" + 
+				"		}");
+		
+		/*getInstance().setConfig("{\r\n" + 
 				"			'partnerId':'1',\r\n" + 
 				"			'apiKey':'idk',\r\n" + 
 				"			'products': [\r\n" + 
@@ -52,7 +60,7 @@ public class Database {
 				"					]\r\n" + 
 				"				}\r\n" + 
 				"			]\r\n" + 
-				"		}");
+				"		}");*/
 	}
 
 	/*
@@ -101,6 +109,9 @@ public class Database {
 	    	configPartner.addProduct(currProduct);
 	    }
 	    
+	    // TODO what if overwriting?
+	    partnerMap.put(partnerId, configPartner);
+	    
 	    System.out.println(configPartner.toString());
 	    
 	    /*
@@ -108,5 +119,9 @@ public class Database {
 	    JsonArray jarray = jobject.getAsJsonArray("translations");
 	    jobject = jarray.get(0).getAsJsonObject();
 	    String result = jobject.get("translatedText").toString();*/
+	}
+
+	public Partner getPartner(String id) {
+		return this.partnerMap.get(id);
 	}
 }
