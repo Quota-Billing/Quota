@@ -14,7 +14,11 @@ public class AddUserController implements Route {
 
     try {
       // Add the user to our database
-      Database.getInstance().addUser(partnerId, productId, userId);
+      boolean added = Database.getInstance().addUser(partnerId, productId, userId);
+      if (!added) {
+        response.status(500);
+        return response;
+      }
     } catch(Exception e) {
       response.status(500);
       return response;
@@ -23,6 +27,7 @@ public class AddUserController implements Route {
     // Send the user to Shared
 //    Response sharedRes = SharedServiceClient.getInstance().addUser(partnerId, productId, userId);
 
+    response.status(200);
     return response; // Change to sharedRes once implemented
   }
 }

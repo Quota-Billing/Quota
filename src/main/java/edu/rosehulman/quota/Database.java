@@ -131,8 +131,8 @@ public class Database {
 		//return partnerMap.get(partnerId).getProduct(productId).getUser(userId).getQuota(quotaId);
 	}
 
-	public void addUser(String partnerId, String productId, String userId) {
-	  
+	public boolean addUser(String partnerId, String productId, String userId) {
+	  return this.partnerMap.get(partnerId).getProduct(productId).addUser(new User(userId));
 	}
 	
 }
