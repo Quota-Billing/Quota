@@ -1,23 +1,22 @@
 package edu.rosehulman.quota;
 
-import com.google.gson.Gson;
+import static org.junit.Assert.assertEquals;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
 import spark.Request;
 import spark.Response;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.powermock.api.mockito.PowerMockito.*;
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Database.class, Request.class, Response.class})
-public class AddUserControllerTest {
+public class TestAddUserController {
 
   @Test
   public void testAddUser() throws Exception {
@@ -33,8 +32,9 @@ public class AddUserControllerTest {
     when(request.params(":productId")).thenReturn("the_product_id");
     when(request.params(":userId")).thenReturn("the_user_id");
     Response response = mock(Response.class);
+    when(response.status()).thenReturn(200);
 
-    Response actualResponse = addUserController.handle(request, response);
+    Response actualResponse = (Response) addUserController.handle(request, response);
     
     assertEquals(200, actualResponse.status());
 

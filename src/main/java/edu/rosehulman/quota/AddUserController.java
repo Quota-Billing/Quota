@@ -27,7 +27,6 @@ public class AddUserController implements Route {
     // Send the user to Shared
 //    Response sharedRes = SharedServiceClient.getInstance().addUser(partnerId, productId, userId);
 
-    response.status(200);
     return response; // Change to sharedRes once implemented
   }
 }
