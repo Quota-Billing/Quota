@@ -7,8 +7,14 @@ public class Tier {
   private int value;
   private double price; // TODO: Not a good idea to save price in a double format
 
-  public Tier(String string, String string2, double asDouble, double asDouble2) {
-		// TODO Auto-generated constructor stub
+  public Tier(String id, String name, int max, double price) {
+		this.id = id;
+		this.name = name;
+		this.max = max;
+		this.price = price;
+	}
+
+	public Tier() {
 	}
 
 	public String getId() {

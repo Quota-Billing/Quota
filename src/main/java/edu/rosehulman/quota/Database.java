@@ -73,7 +73,7 @@ public class Database {
 				for (int k = 0; k < tierArray.size(); k++) {
 					JsonObject tier = tierArray.get(k).getAsJsonObject();
 					currQuota.addTier(new Tier(tier.get("id").toString(), tier.get("name").toString(),
-					    tier.get("max").getAsDouble(), tier.get("price").getAsDouble()));
+					    tier.get("max").getAsInt(), tier.get("price").getAsDouble()));
 				}
 				currProduct.addQuota(currQuota);
 			}
