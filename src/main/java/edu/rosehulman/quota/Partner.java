@@ -6,6 +6,7 @@ public class Partner {
 
 	private String id;
 	private HashMap<String, Product> productMap;
+	private String apiKey;
 	
 	public Partner(String partnerId) {
 		this.id = partnerId;
@@ -29,6 +30,10 @@ public class Partner {
 	
 	public Product getProduct(String productId) {
 		return this.productMap.get(productId);
+	}
+
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
 	}
 	
 	

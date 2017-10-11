@@ -8,8 +8,9 @@ public class Quota {
 	private String type; // TODO: Maybe change this to an enum or use the strategy pattern
 	private List<Tier> tiers;
 		
-	public Quota(String quotaId) {
+	public Quota(String quotaId, String name) {
 		this.id = quotaId;
+		this.name = name;
 	}
 
 	public Quota() {
@@ -62,4 +63,8 @@ public class Quota {
   public void setTiers(List<Tier> tiers) {
     this.tiers = tiers;
   }
+
+	public void addTier(Tier tier) {
+		this.tiers.add(tier);
+	}
 }

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import edu.rosehulman.quota.Database;
 
-// TODO better way to test...
+// TODO add tiers to all (or just remove this test)
 public class SetConfigStringTest {
 
 	
@@ -26,6 +26,7 @@ public class SetConfigStringTest {
 		assertEquals(expected, actual);
 	}
 	
+	// this one has correct config
 	@Test
 	public void testSingleList() {
 		Database db = Database.getInstance();
@@ -35,9 +36,20 @@ public class SetConfigStringTest {
 				"			'products': [\r\n" + 
 				"				{\r\n" + 
 				"					'productId':'2',\r\n" + 
+				"					'productName':'pName',\r\n" + 
 				"					'quotas': [\r\n" + 
 				"						{\r\n" + 
-				"							'quotaId':'3'\r\n" +  
+				"							'quotaId':'3',\r\n" +  
+				"							'quotaName':'num_searches',\r\n" +  
+				"							'type':'numerical_recurring',\r\n" +  
+				"							'tiers': [\r\n" + 
+				"								{\r\n" + 
+				"									'tierId':'4',\r\n" +  
+				"									'tierName':'free',\r\n" +  
+				"									'max':'1000',\r\n" +  
+				"									'price': '0'\r\n" + 				
+				"								}\r\n" + 
+				"							]\r\n" + 
 				"						}\r\n" + 
 				"					]\r\n" + 
 				"				}\r\n" + 
