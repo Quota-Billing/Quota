@@ -132,7 +132,8 @@ public class Database {
 	}
 
 	public boolean addUser(String partnerId, String productId, String userId) {
-	  return this.partnerMap.get(partnerId).getProduct(productId).addUser(new User(userId));
+	  Product product = this.partnerMap.get(partnerId).getProduct(productId);
+    return product.addUser(new User(userId, product));
 	}
 	
 }
