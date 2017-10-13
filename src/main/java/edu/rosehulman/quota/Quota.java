@@ -5,8 +5,7 @@ import java.util.List;
 public class Quota {
   private String id;
   private String name;
-  private String type; // TODO: Maybe change this to an enum or use the strategy
-                       // pattern
+  private String type; // TODO: Maybe change this to an enum or use the strategy pattern
   private List<Tier> tiers;
   private String activeTier;
 
@@ -26,8 +25,7 @@ public class Quota {
     String toReturn = "Quota: " + id + "\n";
     // tiers?
     /*
-     * for(String id : this.quotaMap.keySet()) { toReturn +=
-     * this.quotaMap.get(id).toString(); }
+     * for(String id : this.quotaMap.keySet()) { toReturn += this.quotaMap.get(id).toString(); }
      */
     return toReturn;
   }

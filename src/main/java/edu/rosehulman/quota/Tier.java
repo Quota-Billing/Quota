@@ -5,8 +5,7 @@ public class Tier {
   private String name;
   private int max; // TODO: This might need to be changed to BigInt or BigDouble
   private int value;
-  private double price; // TODO: Not a good idea to save price in a double
-                        // format
+  private double price; // TODO: Not a good idea to save price in a double format
 
   public Tier() {
 

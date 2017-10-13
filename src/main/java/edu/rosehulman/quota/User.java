@@ -7,6 +7,7 @@ import java.util.Map;
 public class User {
 
   private String id;
+  // Remove once we have a real db:
   private Map<String, Quota> quotaMap;
 
   public User(String user_id, Product product) {
@@ -34,5 +35,4 @@ public class User {
   public String getId() {
     return this.id;
   }
-
 }
