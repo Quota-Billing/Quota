@@ -3,33 +3,32 @@ package edu.rosehulman.quota;
 import java.util.List;
 
 public class Quota {
-	private String id;
-	private String name;
-	private String type; // TODO: Maybe change this to an enum or use the strategy pattern
-	private List<Tier> tiers;
-		
-	public Quota(String quotaId) {
-		this.id = quotaId;
-	}
+  private String id;
+  private String name;
+  private String type; // TODO: Maybe change this to an enum or use the strategy pattern
+  private List<Tier> tiers;
+  private String activeTier;
 
-	public Quota() {
-	}
+  public Quota(String quotaId) {
+    this.id = quotaId;
+  }
 
-	public String getID() {
-		return this.id;
-	}
-	
-	
-	@Override
-	public String toString() {
-		String toReturn = "Quota: "  + id + "\n";
-		// tiers?
-		/*for(String id : this.quotaMap.keySet()) {
-			toReturn += this.quotaMap.get(id).toString();
-		}*/
-		return toReturn;
-	}
+  public Quota() {
+  }
 
+  public String getID() {
+    return this.id;
+  }
+
+  @Override
+  public String toString() {
+    String toReturn = "Quota: " + id + "\n";
+    // tiers?
+    /*
+     * for(String id : this.quotaMap.keySet()) { toReturn += this.quotaMap.get(id).toString(); }
+     */
+    return toReturn;
+  }
 
   public String getId() {
     return id;
@@ -61,5 +60,13 @@ public class Quota {
 
   public void setTiers(List<Tier> tiers) {
     this.tiers = tiers;
+  }
+
+  public String getActiveTier() {
+    return activeTier;
+  }
+
+  public void setActiveTier(String activeTier) {
+    this.activeTier = activeTier;
   }
 }

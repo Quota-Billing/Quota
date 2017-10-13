@@ -7,6 +7,18 @@ public class Tier {
   private int value;
   private double price; // TODO: Not a good idea to save price in a double format
 
+  public Tier() {
+
+  }
+
+  public Tier(Tier copyTier) {
+    this.id = copyTier.getId();
+    this.name = copyTier.getName();
+    this.max = copyTier.getMax();
+    this.value = 0; // Default 0?
+    this.price = copyTier.getPrice();
+  }
+
   public String getId() {
     return id;
   }
