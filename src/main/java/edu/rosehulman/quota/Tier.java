@@ -17,7 +17,16 @@ public class Tier {
 	public Tier() {
 	}
 
-	public String getId() {
+
+  public Tier(Tier copyTier) {
+    this.id = copyTier.getId();
+    this.name = copyTier.getName();
+    this.max = copyTier.getMax();
+    this.value = 0; // Default 0?
+    this.price = copyTier.getPrice();
+  }
+
+  public String getId() {
     return id;
   }
 

@@ -12,7 +12,7 @@ public class Application {
 
     post(Paths.ADD_USER, new AddUserController()); // Consume an AddUser call from SDK/partner
     post(Paths.SET_CONFIG, new SetConfigController()); // Consume an SetConfig call
-    
+
     // Billing calls this endpoint
     get("/partner/:partnerId/product/:productId/user/:userId/GetQuota/:quotaId", new GetQuotaController());
   }

@@ -25,10 +25,11 @@ public class Database {
 
 	// testing
 	public static void main(String args[]) {
-		Database db = Database.getInstance();
-		db.setConfig("{\r\n" + "			'partnerId':'1',\r\n" + "			'apiKey':'idk',\r\n" + "			'products': [\r\n"
-		    + "			]\r\n" + "		}");
-
+		/*
+		 * Database db = Database.getInstance(); db.setConfig("{\r\n" +
+		 * "			'partnerId':'1',\r\n" + "			'apiKey':'idk',\r\n" +
+		 * "			'products': [\r\n" + "			]\r\n" + "		}");
+		 */
 		/*
 		 * getInstance().setConfig("{\r\n" + "			'partnerId':'1',\r\n" +
 		 * "			'apiKey':'idk',\r\n" + "			'products': [\r\n" + "				{\r\n" +
@@ -49,12 +50,12 @@ public class Database {
 	 * 'productId':'' 'quotas': [ { 'quotaId':'', // tier info here } ] } ] }
 	 */
 
-	public void setConfig(String body) {
+	public boolean setConfig(String body) throws Exception {
 		// from
 		// https://stackoverflow.com/questions/5490789/json-parsing-using-gson-for-java
 		JsonElement jelement = new JsonParser().parse(body);
 		JsonObject jobject = jelement.getAsJsonObject();
-		String partnerId = jobject.get("partnerId").toString();
+		String partnerId = jobject.get("id").toString();
 		Partner configPartner = new Partner(partnerId);
 
 		String apiKey = jobject.get("apiKey").toString();
@@ -64,16 +65,16 @@ public class Database {
 		JsonObject product;
 		for (int i = 0; i < productArray.size(); i++) {
 			product = productArray.get(i).getAsJsonObject();
-			Product currProduct = new Product(product.get("productId").toString(), product.get("productName").toString());
+			Product currProduct = new Product(product.get("id").toString(), product.get("name").toString());
 			JsonArray quotaArray = product.getAsJsonArray("quotas");
 			for (int j = 0; j < quotaArray.size(); j++) {
 				JsonObject quota = quotaArray.get(j).getAsJsonObject();
-				Quota currQuota = new Quota(quota.get("quotaId").toString(), quota.get("quotaName").toString());
+				Quota currQuota = new Quota(quota.get("id").toString(), quota.get("name").toString());
 				JsonArray tierArray = quota.getAsJsonArray("tiers");
 				for (int k = 0; k < tierArray.size(); k++) {
 					JsonObject tier = tierArray.get(k).getAsJsonObject();
-					currQuota.addTier(new Tier(tier.get("id").toString(), tier.get("name").toString(),
-					    tier.get("max").getAsInt(), tier.get("price").getAsDouble()));
+					currQuota.addTier(new Tier(tier.get("id").toString(), tier.get("name").toString(), tier.get("max").getAsInt(),
+					    tier.get("price").getAsDouble()));
 				}
 				currProduct.addQuota(currQuota);
 			}
@@ -84,13 +85,7 @@ public class Database {
 		partnerMap.put(partnerId, configPartner);
 
 		System.out.println(configPartner.toString());
-
-		/*
-		 * jobject = jobject.getAsJsonObject("data"); JsonArray jarray =
-		 * jobject.getAsJsonArray("translations"); jobject =
-		 * jarray.get(0).getAsJsonObject(); String result =
-		 * jobject.get("translatedText").toString();
-		 */
+		return true;
 	}
 
 	public Partner getPartner(String id) {
@@ -107,5 +102,4 @@ public class Database {
 	public boolean addUser(String partnerId, String productId, String userId) {
 		return this.partnerMap.get(partnerId).getProduct(productId).addUser(new User(userId));
 	}
-
 }

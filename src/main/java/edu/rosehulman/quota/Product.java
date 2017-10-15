@@ -3,7 +3,6 @@ package edu.rosehulman.quota;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class Product {
 
 	private String id;
@@ -45,9 +44,13 @@ public class Product {
 		return toReturn;
 	}
 
+	public Map<String, Quota> getQuotas() {
+		return this.quotaMap;
+	}
+
 	/*public User getUser(String userId) {
 		// TODO Auto-generated method stub
 		return null;
 	}*/
-	
+
 }
