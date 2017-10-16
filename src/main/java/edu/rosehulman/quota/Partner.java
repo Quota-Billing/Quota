@@ -32,6 +32,10 @@ public class Partner {
 		return this.productMap.get(productId);
 	}
 
+	public String getApiKey() {
+		return apiKey;
+	}
+
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
 	}

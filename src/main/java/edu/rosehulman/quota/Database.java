@@ -58,6 +58,7 @@ public class Database {
 		String partnerId = jobject.get("id").toString();
 		Partner configPartner = new Partner(partnerId);
 
+		// API Key unused for now
 		String apiKey = jobject.get("apiKey").toString();
 		configPartner.setApiKey(apiKey);
 		JsonArray productArray = jobject.getAsJsonArray("products");
