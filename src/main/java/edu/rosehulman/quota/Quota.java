@@ -3,80 +3,80 @@ package edu.rosehulman.quota;
 import java.util.List;
 
 public class Quota {
-	private String id;
-	private String name;
-	private String type; // TODO: Maybe change this to an enum or use the strategy pattern
-	private List<Tier> tiers;
-	private String activeTier;
+  private String id;
+  private String name;
+  private String type; // TODO: Maybe change this to an enum or use the strategy pattern
+  private List<Tier> tiers;
+  private String activeTier;
 
-	public Quota(String quotaId) {
-		this.id = quotaId;
-	}
+  public Quota(String quotaId) {
+    this.id = quotaId;
+  }
 
-	public Quota() {
-	}
+  public Quota() {
+  }
 
-	public Quota(String id, String name) {
-		this.id = id;
-		this.name = name;
-	}
+  public Quota(String id, String name) {
+    this.id = id;
+    this.name = name;
+  }
 
-	public String getID() {
-		return this.id;
-	}
+  public String getID() {
+    return this.id;
+  }
 
-	@Override
-	public String toString() {
-		String toReturn = "Quota: " + id + "\n";
-		// tiers?
-		/*
-		 * for(String id : this.quotaMap.keySet()) { toReturn +=
-		 * this.quotaMap.get(id).toString(); }
-		 */
-		return toReturn;
-	}
+  @Override
+  public String toString() {
+    String toReturn = "Quota: " + id + "\n";
+    // tiers?
+    /*
+     * for(String id : this.quotaMap.keySet()) { toReturn +=
+     * this.quotaMap.get(id).toString(); }
+     */
+    return toReturn;
+  }
 
-	public String getId() {
-		return id;
-	}
+  public String getId() {
+    return id;
+  }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+  public void setId(String id) {
+    this.id = id;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public String getType() {
-		return type;
-	}
+  public String getType() {
+    return type;
+  }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+  public void setType(String type) {
+    this.type = type;
+  }
 
-	public List<Tier> getTiers() {
-		return tiers;
-	}
+  public List<Tier> getTiers() {
+    return tiers;
+  }
 
-	public void setTiers(List<Tier> tiers) {
-		this.tiers = tiers;
-	}
+  public void setTiers(List<Tier> tiers) {
+    this.tiers = tiers;
+  }
 
-	public void addTier(Tier tier) {
-		this.tiers.add(tier);
-	}
+  public void addTier(Tier tier) {
+    this.tiers.add(tier);
+  }
 
-	public String getActiveTier() {
-		return activeTier;
-	}
+  public String getActiveTier() {
+    return activeTier;
+  }
 
-	public void setActiveTier(String activeTier) {
-		this.activeTier = activeTier;
-	}
+  public void setActiveTier(String activeTier) {
+    this.activeTier = activeTier;
+  }
 }
