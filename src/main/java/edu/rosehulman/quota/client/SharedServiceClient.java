@@ -1,4 +1,4 @@
-package edu.rosehulman.quota;
+package edu.rosehulman.quota.client;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;

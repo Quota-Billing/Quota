@@ -1,106 +1,93 @@
 package edu.rosehulman.quota;
 
-import java.util.HashMap;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
+import edu.rosehulman.quota.model.*;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import java.util.List;
+import java.util.Optional;
 
 public class Database {
 
   private static Database instance;
-  private HashMap<String, Partner> partnerMap;
+  private ConnectionSource connectionSource;
 
-  private Database() {
-    partnerMap = new HashMap<>();
+  private Database() throws Exception {
+    String databaseUrl = "jdbc:postgresql://localhost:5432/quota"; // TODO: Set in config file
+    connectionSource = new JdbcConnectionSource(databaseUrl);
   }
 
-  public static synchronized Database getInstance() {
+  public static synchronized Database getInstance() throws Exception {
     if (instance == null) {
       instance = new Database();
     }
     return instance;
   }
 
-  // testing
-  public static void main(String args[]) {
-    /*
-     * Database db = Database.getInstance(); db.setConfig("{\r\n" +
-     * "			'partnerId':'1',\r\n" + "			'apiKey':'idk',\r\n" +
-     * "			'products': [\r\n" + "			]\r\n" + "		}");
-     */
-    /*
-     * getInstance().setConfig("{\r\n" + "			'partnerId':'1',\r\n" +
-     * "			'apiKey':'idk',\r\n" + "			'products': [\r\n" + "				{\r\n" +
-     * "					'productId':'2',\r\n" + "					'quotas': [\r\n" +
-     * "						{\r\n" + "							'quotaId':'3'\r\n" +
-     * "						},\r\n" + "						{\r\n" + "							'quotaId':'4'\r\n"
-     * + "						}\r\n" + "					]\r\n" + "				},\r\n" + "				{\r\n"
-     * + "					'productId':'7',\r\n" + "					'quotas': [\r\n" +
-     * "						{\r\n" + "							'quotaId':'99'\r\n" +
-     * "						},\r\n" + "						{\r\n" +
-     * "							'quotaId':'00'\r\n" + "						}\r\n" + "					]\r\n" +
-     * "				}\r\n" + "			]\r\n" + "		}");
-     */
+  public Optional<Partner> getPartner(String partnerId) throws Exception {
+    List<Partner> partners = getPartnerDao().query(getPartnerDao().queryBuilder().where().eq("partner_id", partnerId).prepare());
+    return partners.isEmpty() ? Optional.empty() : Optional.ofNullable(partners.get(0));
   }
 
-  /*
-   * POST: /SetConfig Payload: { 'partnerId':'1', 'apiKey':'', 'products': [ {
-   * 'productId':'' 'quotas': [ { 'quotaId':'', // tier info here } ] } ] }
-   */
-
-  public boolean setConfig(String body) throws Exception {
-    // from
-    // https://stackoverflow.com/questions/5490789/json-parsing-using-gson-for-java
-    JsonElement jelement = new JsonParser().parse(body);
-    JsonObject jobject = jelement.getAsJsonObject();
-    String partnerId = jobject.get("id").toString();
-    Partner configPartner = new Partner(partnerId);
-
-    // API Key unused for now
-    String apiKey = jobject.get("apiKey").toString();
-    configPartner.setApiKey(apiKey);
-    JsonArray productArray = jobject.getAsJsonArray("products");
-
-    JsonObject product;
-    for (int i = 0; i < productArray.size(); i++) {
-      product = productArray.get(i).getAsJsonObject();
-      Product currProduct = new Product(product.get("id").toString(), product.get("name").toString());
-      JsonArray quotaArray = product.getAsJsonArray("quotas");
-      for (int j = 0; j < quotaArray.size(); j++) {
-        JsonObject quota = quotaArray.get(j).getAsJsonObject();
-        Quota currQuota = new Quota(quota.get("id").toString(), quota.get("name").toString());
-        JsonArray tierArray = quota.getAsJsonArray("tiers");
-        for (int k = 0; k < tierArray.size(); k++) {
-          JsonObject tier = tierArray.get(k).getAsJsonObject();
-          currQuota.addTier(new Tier(tier.get("id").toString(), tier.get("name").toString(), tier.get("max").getAsInt(),
-              tier.get("price").getAsDouble()));
-        }
-        currProduct.addQuota(currQuota);
-      }
-      configPartner.addProduct(currProduct);
-    }
-
-    // TODO what if overwriting?
-    partnerMap.put(partnerId, configPartner);
-
-    System.out.println(configPartner.toString());
-    return true;
+  public void addPartner(Partner partner) throws Exception {
+    getPartnerDao().create(partner);
   }
 
-  public Partner getPartner(String id) {
-    return this.partnerMap.get(id);
+  public Optional<Product> getProduct(String partnerId, String productId) throws Exception {
+    List<Product> products = getProductDao().query(getProductDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).prepare());
+    return products.isEmpty() ? Optional.empty() : Optional.ofNullable(products.get(0));
   }
 
-  // TODO fix inconsistencies with quota. Is a user needed?
-  public Quota getQuota(String partnerId, String productId, String userId, String quotaId) {
-    return null;
-    // return
-    // partnerMap.get(partnerId).getProduct(productId).getUser(userId).getQuota(quotaId);
+  public void addProduct(Product product) throws Exception {
+    getProductDao().create(product);
   }
 
-  public boolean addUser(String partnerId, String productId, String userId) {
-    return this.partnerMap.get(partnerId).getProduct(productId).addUser(new User(userId));
+  public Optional<Quota> getQuota(String partnerId, String productId, String quotaId) throws Exception {
+    List<Quota> quotas = getQuotaDao().query(getQuotaDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("quota_id", quotaId).prepare());
+    return quotas.isEmpty() ? Optional.empty() : Optional.ofNullable(quotas.get(0));
+  }
+
+  public void addQuota(Quota quota) throws Exception {
+    getQuotaDao().create(quota);
+  }
+
+  public Optional<Tier> getTier(String partnerId, String productId, String quotaId, String tierId) throws Exception {
+    List<Tier> tiers = getTierDao().query(getTierDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("quota_id", quotaId).and().eq("tier_id", tierId).prepare());
+    return tiers.isEmpty() ? Optional.empty() : Optional.ofNullable(tiers.get(0));
+  }
+
+  public void addTier(Tier tier) throws Exception {
+    getTierDao().create(tier);
+  }
+
+  public Optional<User> getUser(String partnerId, String productId, String userId) throws Exception {
+    List<User> users = getUserDao().query(getUserDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("user_id", userId).prepare());
+    return users.isEmpty() ? Optional.empty() : Optional.ofNullable(users.get(0));
+  }
+
+  public void addUser(User user) throws Exception {
+    getUserDao().create(user);
+  }
+
+  private Dao<Partner, String> getPartnerDao() throws Exception {
+    return DaoManager.createDao(connectionSource, Partner.class);
+  }
+
+  private Dao<Product, String> getProductDao() throws Exception {
+    return DaoManager.createDao(connectionSource, Product.class);
+  }
+
+  private Dao<Quota, String> getQuotaDao() throws Exception {
+    return DaoManager.createDao(connectionSource, Quota.class);
+  }
+
+  private Dao<Tier, String> getTierDao() throws Exception {
+    return DaoManager.createDao(connectionSource, Tier.class);
+  }
+
+  private Dao<User, String> getUserDao() throws Exception {
+    return DaoManager.createDao(connectionSource, User.class);
   }
 }
