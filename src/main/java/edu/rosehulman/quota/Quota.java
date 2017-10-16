@@ -16,6 +16,11 @@ public class Quota {
   public Quota() {
   }
 
+  public Quota(String id, String name) {
+    this.id = id;
+    this.name = name;
+  }
+
   public String getID() {
     return this.id;
   }
@@ -25,7 +30,8 @@ public class Quota {
     String toReturn = "Quota: " + id + "\n";
     // tiers?
     /*
-     * for(String id : this.quotaMap.keySet()) { toReturn += this.quotaMap.get(id).toString(); }
+     * for(String id : this.quotaMap.keySet()) { toReturn +=
+     * this.quotaMap.get(id).toString(); }
      */
     return toReturn;
   }
@@ -60,6 +66,10 @@ public class Quota {
 
   public void setTiers(List<Tier> tiers) {
     this.tiers = tiers;
+  }
+
+  public void addTier(Tier tier) {
+    this.tiers.add(tier);
   }
 
   public String getActiveTier() {

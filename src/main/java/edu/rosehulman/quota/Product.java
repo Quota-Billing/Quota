@@ -9,9 +9,11 @@ public class Product {
   // TODO: We need to figure out which of these belong here
   private Map<String, Quota> quotaMap;
   private Map<String, User> userMap;
+  private String name;
 
-  public Product(String productId) {
+  public Product(String productId, String name) {
     this.id = productId;
+    this.setName(name);
     this.quotaMap = new HashMap<>();
     this.userMap = new HashMap<>();
   }
@@ -28,10 +30,6 @@ public class Product {
     return false;
   }
 
-  public Map<String, Quota> getQuotas() {
-    return quotaMap;
-  }
-
   public String getId() {
     return this.id;
   }
@@ -44,6 +42,18 @@ public class Product {
       toReturn += this.quotaMap.get(id).toString();
     }
     return toReturn;
+  }
+
+  public Map<String, Quota> getQuotas() {
+    return this.quotaMap;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   /*

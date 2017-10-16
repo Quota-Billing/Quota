@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Database.class, Request.class, Response.class})
+@PrepareForTest({ Database.class, Request.class, Response.class })
 public class GetQuotaControllerTest {
 
   @Test
@@ -38,7 +38,8 @@ public class GetQuotaControllerTest {
     tier.setPrice(99.99);
     tiers.add(tier);
     expectedQuota.setTiers(tiers);
-    when(database.getQuota("the_partner_id", "the_product_id", "the_user_id", "the_quota_id")).thenReturn(expectedQuota);
+    when(database.getQuota("the_partner_id", "the_product_id", "the_user_id", "the_quota_id"))
+        .thenReturn(expectedQuota);
 
     GetQuotaController getQuotaController = new GetQuotaController();
 

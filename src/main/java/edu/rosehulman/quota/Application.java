@@ -10,7 +10,8 @@ public class Application {
 
     get("/health", (request, response) -> "OK");
 
-    post("partner/:partnerId/product/:productId/addUser/:userId", new AddUserController()); // Consume an AddUser call from SDK/partner
+    post(Paths.ADD_USER, new AddUserController()); // Consume an AddUser call from SDK/partner
+    post(Paths.SET_CONFIG, new SetConfigController()); // Consume an SetConfig call
 
     // Billing calls this endpoint
     get("/partner/:partnerId/product/:productId/user/:userId/GetQuota/:quotaId", new GetQuotaController());
