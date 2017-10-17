@@ -15,12 +15,12 @@ public class Application {
     get("/health", (request, response) -> "OK");
 
     // Consume an AddUser call from SDK/partner
-    post("partner/:partnerId/product/:productId/addUser/:userId", new AddUserController());
+    post("partner/:partnerId/product/:productId/user/:userId", new AddUserController());
 
     // Consume an SetConfig call
     post("setConfig", new SetConfigController());
 
     // Billing calls this endpoint
-    get("/partner/:partnerId/product/:productId/user/:userId/GetQuota/:quotaId", new GetQuotaController());
+    get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
   }
 }
