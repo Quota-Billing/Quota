@@ -1,6 +1,5 @@
 package edu.rosehulman.quota.controller;
 
-import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.client.SharedServiceClient;
 import edu.rosehulman.quota.model.User;
 import org.apache.http.HttpException;
@@ -21,8 +20,8 @@ public class AddUserController implements Route {
     user.setProductId(productId);
     user.setUserId(userId);
 
-    // Add the user to our database
-    Database.getInstance().addUser(user);
+    // TODO: Add the user to our database
+    // Database.getInstance().addUser(user);
 
     // Send the user to Shared
     boolean sharedRes = SharedServiceClient.getInstance().addUser(partnerId, productId, userId);

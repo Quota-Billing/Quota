@@ -3,8 +3,6 @@ package edu.rosehulman.quota;
 import edu.rosehulman.quota.controller.AddUserController;
 import edu.rosehulman.quota.controller.GetQuotaController;
 import edu.rosehulman.quota.controller.SetConfigController;
-import edu.rosehulman.quota.model.Partner;
-import edu.rosehulman.quota.model.Product;
 
 import static spark.Spark.*;
 
@@ -22,18 +20,5 @@ public class Application {
 
     // Billing calls this endpoint
     get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
-    try {
-      Partner partner = new Partner();
-      partner.setPartnerId("testPartner");
-      partner.setApiKey("testApiKey");
-      Database.getInstance().addPartner(partner);
-
-      Product product = new Product();
-      product.setPartnerId("testPartner");
-      product.setProductId("testProduct");
-      product.setProductName("testProductName");
-      Database.getInstance().addProduct(product);
-    } catch (Exception e) {
-    }
   }
 }

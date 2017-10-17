@@ -34,7 +34,6 @@
                 <configuration>
                     <url>jdbc:postgresql://localhost:5432/quota</url>
                     <user>quota</user>
-                    <password>pass</password>
                 </configuration>
                 <dependencies>
                     <dependency>
