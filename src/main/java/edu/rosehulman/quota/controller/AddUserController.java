@@ -29,6 +29,6 @@ public class AddUserController implements Route {
       throw new HttpException("Adding user to shared server failed");
     }
 
-    return response;
+    return "";
   }
 }
