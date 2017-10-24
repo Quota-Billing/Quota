@@ -17,7 +17,8 @@ public class SharedServiceClient {
   public boolean addUser(String partnerId, String productId, String userId) {
     try {
       // TODO: Put Shared Server path in config and in here
-      HttpResponse<String> response = Unirest.post("http://localhost:8084/partner/{partnerId}/product/{productId}/user/{userId}")
+      HttpResponse<String> response = Unirest
+          .post("http://localhost:8084/partner/{partnerId}/product/{productId}/user/{userId}")
           .routeParam("partnerId", partnerId).routeParam("productId", productId).routeParam("userId", userId)
           .asString();
       return response.getStatus() == 200;
@@ -25,11 +26,12 @@ public class SharedServiceClient {
       return false;
     }
   }
-  
+
   public boolean deleteUser(String partnerId, String productId, String userId) {
     try {
       // TODO: Put Shared Server path in config and in here
-      HttpResponse<String> response = Unirest.delete("http://localhost:8084/partner/{partnerId}/product/{productId}/user/{userId}")
+      HttpResponse<String> response = Unirest
+          .delete("http://localhost:8084/partner/{partnerId}/product/{productId}/user/{userId}")
           .routeParam("partnerId", partnerId).routeParam("productId", productId).routeParam("userId", userId)
           .asString();
       return response.getStatus() == 200; // or 202???

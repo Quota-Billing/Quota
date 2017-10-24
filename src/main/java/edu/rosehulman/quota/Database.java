@@ -76,7 +76,6 @@ public class Database {
     getUserDao().create(user);
   }
 
-
   // TODO does this work or need to extract parts?
   public void deleteUser(User user) throws Exception {
     getUserDao().delete(user);
