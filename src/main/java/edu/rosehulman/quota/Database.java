@@ -27,7 +27,8 @@ public class Database {
   }
 
   public Optional<Partner> getPartner(String partnerId) throws Exception {
-    List<Partner> partners = getPartnerDao().query(getPartnerDao().queryBuilder().where().eq("partner_id", partnerId).prepare());
+    List<Partner> partners = getPartnerDao()
+        .query(getPartnerDao().queryBuilder().where().eq("partner_id", partnerId).prepare());
     return partners.isEmpty() ? Optional.empty() : Optional.ofNullable(partners.get(0));
   }
 
@@ -36,7 +37,8 @@ public class Database {
   }
 
   public Optional<Product> getProduct(String partnerId, String productId) throws Exception {
-    List<Product> products = getProductDao().query(getProductDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).prepare());
+    List<Product> products = getProductDao().query(
+        getProductDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).prepare());
     return products.isEmpty() ? Optional.empty() : Optional.ofNullable(products.get(0));
   }
 
@@ -45,7 +47,8 @@ public class Database {
   }
 
   public Optional<Quota> getQuota(String partnerId, String productId, String quotaId) throws Exception {
-    List<Quota> quotas = getQuotaDao().query(getQuotaDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("quota_id", quotaId).prepare());
+    List<Quota> quotas = getQuotaDao().query(getQuotaDao().queryBuilder().where().eq("partner_id", partnerId).and()
+        .eq("product_id", productId).and().eq("quota_id", quotaId).prepare());
     return quotas.isEmpty() ? Optional.empty() : Optional.ofNullable(quotas.get(0));
   }
 
@@ -54,7 +57,8 @@ public class Database {
   }
 
   public Optional<Tier> getTier(String partnerId, String productId, String quotaId, String tierId) throws Exception {
-    List<Tier> tiers = getTierDao().query(getTierDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("quota_id", quotaId).and().eq("tier_id", tierId).prepare());
+    List<Tier> tiers = getTierDao().query(getTierDao().queryBuilder().where().eq("partner_id", partnerId).and()
+        .eq("product_id", productId).and().eq("quota_id", quotaId).and().eq("tier_id", tierId).prepare());
     return tiers.isEmpty() ? Optional.empty() : Optional.ofNullable(tiers.get(0));
   }
 
@@ -63,12 +67,19 @@ public class Database {
   }
 
   public Optional<User> getUser(String partnerId, String productId, String userId) throws Exception {
-    List<User> users = getUserDao().query(getUserDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("user_id", userId).prepare());
+    List<User> users = getUserDao().query(getUserDao().queryBuilder().where().eq("partner_id", partnerId).and()
+        .eq("product_id", productId).and().eq("user_id", userId).prepare());
     return users.isEmpty() ? Optional.empty() : Optional.ofNullable(users.get(0));
   }
 
   public void addUser(User user) throws Exception {
     getUserDao().create(user);
+  }
+
+
+  // TODO does this work or need to extract parts?
+  public void deleteUser(User user) throws Exception {
+    getUserDao().delete(user);
   }
 
   private Dao<Partner, String> getPartnerDao() throws Exception {
@@ -90,4 +101,5 @@ public class Database {
   private Dao<User, String> getUserDao() throws Exception {
     return DaoManager.createDao(connectionSource, User.class);
   }
+
 }
