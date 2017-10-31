@@ -22,7 +22,7 @@ public class Application {
 
     // Consume a SetConfig call
     post("setConfig", new SetConfigController());
-    
+
     // Consume DeleteUser call
     delete("partner/:partnerId/product/:productId/user/:userId", new DeleteUserController());
 
@@ -30,4 +30,3 @@ public class Application {
     get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
   }
 }
- 

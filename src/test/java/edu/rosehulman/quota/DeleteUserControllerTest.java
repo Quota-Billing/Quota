@@ -28,7 +28,7 @@ public class DeleteUserControllerTest {
     Database database = mock(Database.class);
     when(Database.getInstance()).thenReturn(database);
 
-    DeleteUserController ctrller = new DeleteUserController();
+    DeleteUserController deleteUserController = new DeleteUserController();
     Request request = mock(Request.class);
     Response response = mock(Response.class);
 
@@ -42,7 +42,7 @@ public class DeleteUserControllerTest {
     when(SharedServiceClient.getInstance()).thenReturn(client);
     when(client.deleteUser("part_id1", "prod_id1", "user_id1")).thenReturn(true);
 
-    ctrller.handle(request, response);
+    deleteUserController.handle(request, response);
 
     assertEquals(200, response.status()); // or 202
 
@@ -53,7 +53,7 @@ public class DeleteUserControllerTest {
     boolean thrown = false;
 
     try {
-      ctrller.handle(request, response);
+      deleteUserController.handle(request, response);
     } catch (HttpException e) {
       thrown = true;
     }

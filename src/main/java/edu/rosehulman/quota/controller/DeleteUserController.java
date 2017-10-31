@@ -16,13 +16,11 @@ public class DeleteUserController implements Route {
     String productId = request.params(":productId");
     String userId = request.params(":userId");
 
-
     // delete the given user
-    if(!Database.getInstance().deleteUser(partnerId, productId, userId)) {
+    if (!Database.getInstance().deleteUser(partnerId, productId, userId)) {
       response.status(404);
     }
-    
-    
+
     // Send the delete message to Shared
     boolean sharedRes = SharedServiceClient.getInstance().deleteUser(partnerId, productId, userId);
     if (!sharedRes) {
