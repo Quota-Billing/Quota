@@ -2,7 +2,7 @@ package edu.rosehulman.quota;
 
 //@RunWith(PowerMockRunner.class)
 //@PrepareForTest({Database.class, Request.class, Response.class, SharedServiceClient.class})
-public class TestAddUserController {
+public class AddUserControllerTest {
 
 //  @Test
 //  public void testAddUser() throws Exception {

@@ -2,10 +2,13 @@ package edu.rosehulman.quota;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import edu.rosehulman.quota.model.*;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +18,7 @@ public class Database {
   private ConnectionSource connectionSource;
 
   private Database() throws Exception {
-    String databaseUrl = "jdbc:postgresql://localhost:5432/quota"; // TODO: Set in config file
+    String databaseUrl = "jdbc:postgresql://localhost:5432/quota?user=quota&password=pass"; // TODO: Set in config file
     connectionSource = new JdbcConnectionSource(databaseUrl);
   }
 
@@ -71,6 +74,12 @@ public class Database {
     getUserDao().create(user);
   }
 
+  public boolean deleteUser(String partnerId, String productId, String userId) throws Exception {
+    DeleteBuilder<User, String> builder = getUserDao().deleteBuilder();
+    builder.where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("user_id", userId);
+    return builder.delete() > 0;
+  }
+
   private Dao<Partner, String> getPartnerDao() throws Exception {
     return DaoManager.createDao(connectionSource, Partner.class);
   }
@@ -90,4 +99,5 @@ public class Database {
   private Dao<User, String> getUserDao() throws Exception {
     return DaoManager.createDao(connectionSource, User.class);
   }
+
 }
