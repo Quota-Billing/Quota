@@ -15,7 +15,7 @@ public class Database {
   private ConnectionSource connectionSource;
 
   private Database() throws Exception {
-    String databaseUrl = "jdbc:postgresql://localhost:5432/quota"; // TODO: Set in config file
+    String databaseUrl = SystemConfig.getInstance().getDatabaseUrl();
     connectionSource = new JdbcConnectionSource(databaseUrl);
   }
 
