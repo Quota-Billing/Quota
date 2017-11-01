@@ -2,13 +2,11 @@ package edu.rosehulman.quota;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import edu.rosehulman.quota.model.*;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +16,7 @@ public class Database {
   private ConnectionSource connectionSource;
 
   private Database() throws Exception {
-    String databaseUrl = "jdbc:postgresql://localhost:5432/quota?user=quota&password=pass"; // TODO: Set in config file
+    String databaseUrl = SystemConfig.getInstance().getDatabaseUrl();
     connectionSource = new JdbcConnectionSource(databaseUrl);
   }
 

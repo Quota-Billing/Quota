@@ -2,7 +2,6 @@ package edu.rosehulman.quota.controller;
 
 import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.client.SharedServiceClient;
-import edu.rosehulman.quota.model.User;
 import org.apache.http.HttpException;
 import spark.Request;
 import spark.Response;
