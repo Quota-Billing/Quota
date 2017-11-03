@@ -5,6 +5,8 @@ import edu.rosehulman.quota.controller.DeleteUserController;
 import edu.rosehulman.quota.controller.GetQuotaController;
 import edu.rosehulman.quota.controller.GetUserController;
 import edu.rosehulman.quota.controller.SetConfigController;
+import edu.rosehulman.quota.model.Partner;
+import edu.rosehulman.quota.model.Product;
 
 import static spark.Spark.*;
 
@@ -28,5 +30,20 @@ public class Application {
 
     // Billing calls this endpoint
     get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
+
+    try {
+      Partner partner = new Partner();
+      partner.setApiKey("api_key");
+      partner.setPartnerId("partner_id");
+      Database.getInstance().addPartner(partner);
+
+      Product product = new Product();
+      product.setPartnerId("partner_id");
+      product.setProductId("product_id");
+      product.setProductName("product_name");
+      Database.getInstance().addProduct(product);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }
