@@ -33,14 +33,14 @@ public class Application {
 
     try {
       Partner partner = new Partner();
-      partner.setApiKey("api_key");
-      partner.setPartnerId("partner_id");
+      partner.setApiKey("apiKey");
+      partner.setPartnerId("partnerId");
       Database.getInstance().addPartner(partner);
 
       Product product = new Product();
-      product.setPartnerId("partner_id");
-      product.setProductId("product_id");
-      product.setProductName("product_name");
+      product.setPartnerId("partnerId");
+      product.setProductId("productId");
+      product.setProductName("productName");
       Database.getInstance().addProduct(product);
     } catch (Exception e) {
       e.printStackTrace();
