@@ -32,8 +32,9 @@ public class Application {
     // Consume DeleteUser call
     delete("partner/:partnerId/product/:productId/user/:userId", new DeleteUserController());
 
+    // TODO change this to accept billing requests
     // Billing calls this endpoint
-    get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
+//    get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
 
     try {
       Partner partner = new Partner();

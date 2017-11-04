@@ -13,7 +13,6 @@ public class GetQuotaController implements Route {
     String quotaId = request.params(":quotaId");
 
     if (!Database.getInstance().getQuota(partnerId, productId, quotaId).isPresent()) {
-      System.out.println("ER");
       response.status(404);
     }
 
