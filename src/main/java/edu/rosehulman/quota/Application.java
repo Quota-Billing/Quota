@@ -7,6 +7,7 @@ import edu.rosehulman.quota.controller.GetUserController;
 import edu.rosehulman.quota.controller.SetConfigController;
 import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.Product;
+import edu.rosehulman.quota.model.Quota;
 
 import static spark.Spark.*;
 
@@ -21,6 +22,9 @@ public class Application {
 
     // Consume a GetUser call from SDK/partner
     get("partner/:partnerId/product/:productId/user/:userId", new GetUserController());
+
+    // Consume a GetQuota call from SDK/partner
+    get("partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
 
     // Consume a SetConfig call
     post("setConfig", new SetConfigController());
@@ -42,6 +46,14 @@ public class Application {
       product.setProductId("productId");
       product.setProductName("productName");
       Database.getInstance().addProduct(product);
+
+      Quota quota = new Quota();
+      quota.setQuotaId("quotaId");
+      quota.setQuotaName("quotaName");
+      quota.setPartnerId("partnerId");
+      quota.setProductId("productId");
+      quota.setType("numerical");
+      Database.getInstance().addQuota(quota);
     } catch (Exception e) {
       e.printStackTrace();
     }
