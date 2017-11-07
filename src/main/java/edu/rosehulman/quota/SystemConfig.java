@@ -16,7 +16,7 @@ public class SystemConfig {
   public SystemConfig() {
     Gson gson = new Gson();
 
-    try (Reader reader = new FileReader("/tmp/quota/config.json")) {
+    try (Reader reader = new FileReader("/quota/config.json")) {
       config = gson.fromJson(reader, Config.class);
     } catch (IOException e) {
       e.printStackTrace();
