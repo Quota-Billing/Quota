@@ -4,6 +4,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import edu.rosehulman.quota.model.*;
 
@@ -54,6 +55,10 @@ public class Database {
     getQuotaDao().create(quota);
   }
 
+  public List<Tier> getQuotaTiers(String partnerId, String productId, String quotaId) throws Exception {
+    return getTierDao().query(getTierDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("quota_id", quotaId).prepare());
+  }
+
   public Optional<Tier> getTier(String partnerId, String productId, String quotaId, String tierId) throws Exception {
     List<Tier> tiers = getTierDao().query(getTierDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("quota_id", quotaId).and().eq("tier_id", tierId).prepare());
     return tiers.isEmpty() ? Optional.empty() : Optional.ofNullable(tiers.get(0));
@@ -78,6 +83,22 @@ public class Database {
     return builder.delete() > 0;
   }
 
+  public void addUserTier(UserTier userTier) throws Exception {
+    getUserTierDao().create(userTier);
+  }
+
+  public Optional<UserTier> getUserTier(String partnerId, String productId, String userId, String quotaId, String tierId) throws Exception {
+    List<UserTier> tiers = getUserTierDao().query(getUserTierDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("user_id", userId).and().eq("quota_id", quotaId).and().eq("tier_id", tierId).prepare());
+    return tiers.isEmpty() ? Optional.empty() : Optional.ofNullable(tiers.get(0));
+  }
+
+  public boolean updateUserTier(UserTier userTier) throws Exception {
+    UpdateBuilder<UserTier, String> updateBuilder = getUserTierDao().updateBuilder();
+    updateBuilder.updateColumnValue("value", userTier.getValue());
+    updateBuilder.where().eq("partner_id", userTier.getPartnerId()).and().eq("product_id", userTier.getProductId()).and().eq("user_id", userTier.getUserId()).and().eq("quota_id", userTier.getQuotaId()).and().eq("tier_id", userTier.getTierId());
+    return updateBuilder.update() == 1;
+  }
+
   private Dao<Partner, String> getPartnerDao() throws Exception {
     return DaoManager.createDao(connectionSource, Partner.class);
   }
@@ -97,5 +118,7 @@ public class Database {
   private Dao<User, String> getUserDao() throws Exception {
     return DaoManager.createDao(connectionSource, User.class);
   }
-
+  private Dao<UserTier, String> getUserTierDao() throws Exception {
+    return DaoManager.createDao(connectionSource, UserTier.class);
+  }
 }
