@@ -1,0 +1,221 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "A service to monitor usage of products.  Enforces quota and sends out bills based on usage.",
+    "version": "1.0.0",
+    "title": "Quota/Billing Service"
+  },
+  "tags": [
+    {
+      "name": "user",
+      "description": "Operations about user (the people using the products)."
+    },
+    {
+      "name": "config",
+      "description": "Operations using the configuration file provided by the partner."
+    },
+    {
+      "name": "quota",
+      "description": "Operations about the quota for a user."
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/partner/{partnerId}/product/{productId}/user/{userId}": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Add a user",
+        "description": "Change Me",
+        "operationId": "addUser",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "partnerId",
+            "in": "path",
+            "description": "The id of the partner that the user belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "The id of the product that the user belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The id of the user to be created. ",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get specified user",
+        "description": "Change Me",
+        "operationId": "getUser",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "partnerId",
+            "in": "path",
+            "description": "The id of the partner that the user belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "The id of the product that the user belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The id of the user to get. ",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Delete a user",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "deleteUser",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "partnerId",
+            "in": "path",
+            "description": "The id of the partner that the user belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "The id of the product that the user belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The id of the user to be created. ",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/setConfig": {
+      "post": {
+        "tags": [
+          "config"
+        ],
+        "summary": "Sets the values based on the given config file provided.",
+        "description": "Change Me",
+        "operationId": "setConfig",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/partner/{partnerId}/product/{productId}/user/{userId}/quota/{quotaId}": {
+      "get": {
+        "tags": [
+          "quota"
+        ],
+        "summary": "Get specified quota",
+        "description": "Change Me",
+        "operationId": "getQuota",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "partnerId",
+            "in": "path",
+            "description": "The id of the partner that the quota belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "The id of the product that the quota belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The id of the user the quota belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "quotaId",
+            "in": "path",
+            "description": "The id of the quota to get. ",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}

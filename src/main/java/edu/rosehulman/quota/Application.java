@@ -8,6 +8,8 @@ import edu.rosehulman.quota.controller.SetConfigController;
 import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.Product;
 import edu.rosehulman.quota.model.Quota;
+import edu.rosehulman.quota.controller.*;
+import edu.rosehulman.quota.model.*;
 
 import static spark.Spark.*;
 
@@ -36,6 +38,8 @@ public class Application {
     // Billing calls this endpoint
 //    get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
 
+    post("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new IncrementQuotaController());
+
     try {
       Partner partner = new Partner();
       partner.setApiKey("apiKey");
@@ -55,6 +59,31 @@ public class Application {
       quota.setProductId("productId");
       quota.setType("numerical");
       Database.getInstance().addQuota(quota);
+      
+      User user = new User();
+      user.setPartnerId("partnerId");
+      user.setProductId("productId");
+      user.setUserId("userId");
+      Database.getInstance().addUser(user);
+
+      Tier tier = new Tier();
+      tier.setPartnerId("partnerId");
+      tier.setProductId("productId");
+      tier.setQuotaId("quotaId");
+      tier.setTierId("tierId");
+      tier.setTierName("tierName");
+      tier.setMax("5");
+      tier.setPrice("23.00");
+      Database.getInstance().addTier(tier);
+
+      UserTier userTier = new UserTier();
+      userTier.setPartnerId("partnerId");
+      userTier.setProductId("productId");
+      userTier.setUserId("userId");
+      userTier.setQuotaId("quotaId");
+      userTier.setTierId("tierId");
+      userTier.setValue("0");
+      Database.getInstance().addUserTier(userTier);
     } catch (Exception e) {
       e.printStackTrace();
     }
