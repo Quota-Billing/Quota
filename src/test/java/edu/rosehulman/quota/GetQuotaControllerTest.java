@@ -1,49 +1,54 @@
 package edu.rosehulman.quota;
 
-//@RunWith(PowerMockRunner.class)
-//@PrepareForTest({Database.class, Request.class, Response.class})
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+
+import java.util.Optional;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import edu.rosehulman.quota.controller.GetQuotaController;
+import edu.rosehulman.quota.model.Quota;
+import spark.Request;
+import spark.Response;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ Database.class, Request.class, Response.class })
 public class GetQuotaControllerTest {
 
-//  @Test
-//  public void testGetQuota() throws Exception {
-//    mockStatic(Database.class);
-//    Database database = Mockito.mock(Database.class);
-//    when(Database.getInstance()).thenReturn(database);
-//
-//    Quota expectedQuota = new Quota();
-//    expectedQuota.setId("the_quota_id");
-//    expectedQuota.setName("the_quota_name");
-//    expectedQuota.setType("numerical_recurring");
-//    List<Tier> tiers = new ArrayList<>();
-//    Tier tier = new Tier();
-//    tier.setId("the_tier_id");
-//    tier.setName("the_tier_name");
-//    tier.setMax(1000);
-//    tier.setValue(500);
-//    tier.setPrice(99.99);
-//    tiers.add(tier);
-//    expectedQuota.setTiers(tiers);
-//    when(database.getQuota("the_partner_id", "the_product_id", "the_user_id", "the_quota_id"))
-//        .thenReturn(expectedQuota);
-//
-//    GetQuotaController getQuotaController = new GetQuotaController();
-//
-//    Request request = mock(Request.class);
-//    when(request.params(":partnerId")).thenReturn("the_partner_id");
-//    when(request.params(":productId")).thenReturn("the_product_id");
-//    when(request.params(":userId")).thenReturn("the_user_id");
-//    when(request.params(":quotaId")).thenReturn("the_quota_id");
-//    Response response = mock(Response.class);
-//
-//    Quota actualQuota = new Gson().fromJson((String) getQuotaController.handle(request, response), Quota.class);
-//
-//    assertEquals(expectedQuota.getId(), actualQuota.getId());
-//    assertEquals(expectedQuota.getName(), actualQuota.getName());
-//    assertEquals(expectedQuota.getType(), actualQuota.getType());
-//    assertEquals(expectedQuota.getTiers().get(0).getId(), actualQuota.getTiers().get(0).getId());
-//    assertEquals(expectedQuota.getTiers().get(0).getName(), actualQuota.getTiers().get(0).getName());
-//    assertEquals(expectedQuota.getTiers().get(0).getMax(), actualQuota.getTiers().get(0).getMax());
-//    assertEquals(expectedQuota.getTiers().get(0).getValue(), actualQuota.getTiers().get(0).getValue());
-//    assertEquals(expectedQuota.getTiers().get(0).getPrice(), actualQuota.getTiers().get(0).getPrice(), 0.01d);
-//  }
+  @Test
+  public void testGetQuota() throws Exception {
+    mockStatic(Database.class);
+    Database database = mock(Database.class);
+    when(Database.getInstance()).thenReturn(database);
+
+    Quota quota = mock(Quota.class);
+
+    when(database.getQuota("partner_id", "product_id", "quota_id")).thenReturn(Optional.of(quota));
+    when(database.getQuota("partner_id", "product_id", "bad_quota_id")).thenReturn(Optional.empty());
+
+    Request request = mock(Request.class);
+    when(request.params(":partnerId")).thenReturn("partner_id");
+    when(request.params(":productId")).thenReturn("product_id");
+    when(request.params(":userId")).thenReturn("user_id");
+    when(request.params(":quotaId")).thenReturn("quota_id");
+    Response response = mock(Response.class);
+    when(response.status()).thenReturn(200);
+
+    GetQuotaController getQuotaController = new GetQuotaController();
+
+    getQuotaController.handle(request, response);
+    assertEquals(200, response.status());
+
+    when(request.params(":quotaId")).thenReturn("bad_quota_id");
+    when(response.status()).thenReturn(404);
+
+    getQuotaController.handle(request, response);
+    assertEquals(404, response.status());
+  }
 }

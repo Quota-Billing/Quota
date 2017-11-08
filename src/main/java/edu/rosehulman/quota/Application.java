@@ -1,5 +1,13 @@
 package edu.rosehulman.quota;
 
+import edu.rosehulman.quota.controller.AddUserController;
+import edu.rosehulman.quota.controller.DeleteUserController;
+import edu.rosehulman.quota.controller.GetQuotaController;
+import edu.rosehulman.quota.controller.GetUserController;
+import edu.rosehulman.quota.controller.SetConfigController;
+import edu.rosehulman.quota.model.Partner;
+import edu.rosehulman.quota.model.Product;
+import edu.rosehulman.quota.model.Quota;
 import edu.rosehulman.quota.controller.*;
 import edu.rosehulman.quota.model.*;
 
@@ -17,14 +25,18 @@ public class Application {
     // Consume a GetUser call from SDK/partner
     get("partner/:partnerId/product/:productId/user/:userId", new GetUserController());
 
+    // Consume a GetQuota call from SDK/partner
+    get("partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
+
     // Consume a SetConfig call
     post("setConfig", new SetConfigController());
 
     // Consume DeleteUser call
     delete("partner/:partnerId/product/:productId/user/:userId", new DeleteUserController());
 
+    // TODO change this to accept billing requests
     // Billing calls this endpoint
-    get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
+//    get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
 
     post("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new IncrementQuotaController());
 
@@ -40,19 +52,19 @@ public class Application {
       product.setProductName("productName");
       Database.getInstance().addProduct(product);
 
+      Quota quota = new Quota();
+      quota.setQuotaId("quotaId");
+      quota.setQuotaName("quotaName");
+      quota.setPartnerId("partnerId");
+      quota.setProductId("productId");
+      quota.setType("numerical");
+      Database.getInstance().addQuota(quota);
+      
       User user = new User();
       user.setPartnerId("partnerId");
       user.setProductId("productId");
       user.setUserId("userId");
       Database.getInstance().addUser(user);
-
-      Quota quota = new Quota();
-      quota.setPartnerId("partnerId");
-      quota.setProductId("productId");
-      quota.setQuotaId("quotaId");
-      quota.setQuotaName("quotaName");
-      quota.setType("type");
-      Database.getInstance().addQuota(quota);
 
       Tier tier = new Tier();
       tier.setPartnerId("partnerId");
