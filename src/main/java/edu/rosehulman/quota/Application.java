@@ -59,12 +59,6 @@ public class Application {
       quota.setProductId("productId");
       quota.setType("numerical");
       Database.getInstance().addQuota(quota);
-      
-      User user = new User();
-      user.setPartnerId("partnerId");
-      user.setProductId("productId");
-      user.setUserId("userId");
-      Database.getInstance().addUser(user);
 
       Tier tier = new Tier();
       tier.setPartnerId("partnerId");
@@ -76,14 +70,13 @@ public class Application {
       tier.setPrice("23.00");
       Database.getInstance().addTier(tier);
 
-      UserTier userTier = new UserTier();
-      userTier.setPartnerId("partnerId");
-      userTier.setProductId("productId");
-      userTier.setUserId("userId");
-      userTier.setQuotaId("quotaId");
-      userTier.setTierId("tierId");
-      userTier.setValue("0");
-      Database.getInstance().addUserTier(userTier);
+      User user = new User();
+      user.setPartnerId("partnerId");
+      user.setProductId("productId");
+      user.setUserId("userId");
+      Database.getInstance().addUser(user);
+
+      // UserTier automatically populated
     } catch (Exception e) {
       e.printStackTrace();
     }

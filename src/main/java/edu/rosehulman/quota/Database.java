@@ -51,6 +51,10 @@ public class Database {
     return quotas.isEmpty() ? Optional.empty() : Optional.ofNullable(quotas.get(0));
   }
 
+  public List<Quota> getAllQuotasForProduct(String partnerId, String productId) throws Exception {
+    return getQuotaDao().query(getQuotaDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).prepare());
+  }
+
   public void addQuota(Quota quota) throws Exception {
     getQuotaDao().create(quota);
   }
@@ -75,6 +79,24 @@ public class Database {
 
   public void addUser(User user) throws Exception {
     getUserDao().create(user);
+    populateUserTiers(user);
+  }
+
+  private void populateUserTiers(User user) throws Exception {
+    List<Quota> quotas = getAllQuotasForProduct(user.getPartnerId(), user.getProductId());
+    for (Quota quota : quotas) {
+      List<Tier> tiers = getQuotaTiers(quota.getPartnerId(), quota.getProductId(), quota.getQuotaId());
+      for (Tier tier : tiers) { // TODO: Check for 'current' tier in the future
+        UserTier userTier = new UserTier();
+        userTier.setPartnerId(user.getPartnerId());
+        userTier.setProductId(user.getProductId());
+        userTier.setQuotaId(quota.getQuotaId());
+        userTier.setUserId(user.getUserId());
+        userTier.setTierId(tier.getTierId());
+        userTier.setValue("0");
+        addUserTier(userTier);
+      }
+    }
   }
 
   public boolean deleteUser(String partnerId, String productId, String userId) throws Exception {
@@ -118,6 +140,7 @@ public class Database {
   private Dao<User, String> getUserDao() throws Exception {
     return DaoManager.createDao(connectionSource, User.class);
   }
+
   private Dao<UserTier, String> getUserTierDao() throws Exception {
     return DaoManager.createDao(connectionSource, UserTier.class);
   }
