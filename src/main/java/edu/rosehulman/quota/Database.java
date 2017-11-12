@@ -70,11 +70,30 @@ public class Database {
 
   public void addTier(Tier tier) throws Exception {
     getTierDao().create(tier);
+    populateUserTier(tier);
+  }
+
+  private void populateUserTier(Tier tier) throws Exception {
+    List<User> users = getAllUsersForProduct(tier.getPartnerId(), tier.getProductId());
+    for (User user : users) {
+      UserTier userTier = new UserTier();
+      userTier.setPartnerId(user.getPartnerId());
+      userTier.setProductId(user.getProductId());
+      userTier.setQuotaId(tier.getQuotaId());
+      userTier.setUserId(user.getUserId());
+      userTier.setTierId(tier.getTierId());
+      userTier.setValue("0");
+      addUserTier(userTier);
+    }
   }
 
   public Optional<User> getUser(String partnerId, String productId, String userId) throws Exception {
     List<User> users = getUserDao().query(getUserDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("user_id", userId).prepare());
     return users.isEmpty() ? Optional.empty() : Optional.ofNullable(users.get(0));
+  }
+
+  public List<User> getAllUsersForProduct(String partnerId, String productId) throws Exception {
+    return getUserDao().query(getUserDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).prepare());
   }
 
   public void addUser(User user) throws Exception {
