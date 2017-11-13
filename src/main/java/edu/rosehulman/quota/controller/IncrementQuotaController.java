@@ -1,6 +1,7 @@
 package edu.rosehulman.quota.controller;
 
 import edu.rosehulman.quota.Database;
+import edu.rosehulman.quota.client.BillingClient;
 import edu.rosehulman.quota.model.Tier;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
@@ -10,6 +11,8 @@ import spark.Route;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
+
+import org.apache.http.HttpException;
 
 public class IncrementQuotaController implements Route {
 
@@ -42,13 +45,23 @@ public class IncrementQuotaController implements Route {
     // See if we are at or above the quota already
     if (value.compareTo(max) >= 0) {
       response.status(403);
-      return "";
+      // send to billing
+      if (BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId)) {
+        response.status(403);
+      } else {
+        throw new HttpException("Quota reached Billing endpoint failed");
+      }
     }
 
     // See if adding one to the quota would go above the quota
     BigInteger valuePlusOne = value.add(BigInteger.ONE);
     if (valuePlusOne.compareTo(max) > 0) {
-      response.status(403);
+      // send to billing
+      if (BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId)) {
+        response.status(403);
+      } else {
+        throw new HttpException("Quota reached Billing endpoint failed");
+      }
       return "";
     }
 
