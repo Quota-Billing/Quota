@@ -44,7 +44,7 @@ public class IncrementQuotaController implements Route {
 
     // See if we are at or above the quota already
     if (value.compareTo(max) >= 0) {
-      response.status(403);
+      // TODO should we only send once or send if above also just to be safe?
       // send to billing
       if (BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId)) {
         response.status(403);
