@@ -46,8 +46,10 @@ public class IncrementQuotaController implements Route {
     if (value.compareTo(max) >= 0) {
       // TODO should we only send once or send if above also just to be safe?
       // send to billing
-      if (BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId)) {
+      String bill = BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId);
+      if (bill != null) {
         response.status(403);
+        return bill;
       } else {
         throw new HttpException("Quota reached Billing endpoint failed");
       }
@@ -57,12 +59,13 @@ public class IncrementQuotaController implements Route {
     BigInteger valuePlusOne = value.add(BigInteger.ONE);
     if (valuePlusOne.compareTo(max) > 0) {
       // send to billing
-      if (BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId)) {
+      String bill = BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId);
+      if (bill != null) {
         response.status(403);
+        return bill;
       } else {
         throw new HttpException("Quota reached Billing endpoint failed");
       }
-      return "";
     }
 
     // Save the new value to the database
