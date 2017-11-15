@@ -33,6 +33,11 @@ public class Database {
     return partners.isEmpty() ? Optional.empty() : Optional.ofNullable(partners.get(0));
   }
 
+  public Optional<Partner> getPartnerByApi(String apiKey) throws Exception {
+    List<Partner> partners = getPartnerDao().query(getPartnerDao().queryBuilder().where().eq("api_key", apiKey).prepare());
+    return partners.isEmpty() ? Optional.empty() : Optional.ofNullable(partners.get(0));
+  }
+
   public void addPartner(Partner partner) throws Exception {
     getPartnerDao().create(partner);
   }
@@ -163,4 +168,5 @@ public class Database {
   private Dao<UserTier, String> getUserTierDao() throws Exception {
     return DaoManager.createDao(connectionSource, UserTier.class);
   }
+
 }

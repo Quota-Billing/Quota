@@ -1,10 +1,5 @@
 package edu.rosehulman.quota;
 
-import edu.rosehulman.quota.controller.AddUserController;
-import edu.rosehulman.quota.controller.DeleteUserController;
-import edu.rosehulman.quota.controller.GetQuotaController;
-import edu.rosehulman.quota.controller.GetUserController;
-import edu.rosehulman.quota.controller.SetConfigController;
 import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.Product;
 import edu.rosehulman.quota.model.Quota;
@@ -36,9 +31,13 @@ public class Application {
 
     // TODO change this to accept billing requests
     // Billing calls this endpoint
-//    get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
+    //    get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
 
+    // increment quota
     post("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new IncrementQuotaController());
+
+    // Consume a GetPartner call from SDK/partner
+    get("partnerApi/:apiKey", new GetPartnerByApiController());
 
     try {
       Partner partner = new Partner();
