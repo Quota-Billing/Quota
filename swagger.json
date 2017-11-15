@@ -17,6 +17,10 @@
     {
       "name": "quota",
       "description": "Operations about the quota for a user."
+    },
+    {
+      "name": "partner",
+      "description": "Operations about the partner."
     }
   ],
   "schemes": [
@@ -29,10 +33,9 @@
           "user"
         ],
         "summary": "Add a user",
-        "description": "Change Me",
+        "description": "Adds a user to the databases.  Since users aren't unique (can have user with multiple products, for example) we need the partner and product this user belongs to.",
         "operationId": "addUser",
         "produces": [
-          "application/xml",
           "application/json"
         ],
         "parameters": [
@@ -69,10 +72,9 @@
           "user"
         ],
         "summary": "Get specified user",
-        "description": "Change Me",
+        "description": "Gets the specific user specified by the partner, product, and user ids.",
         "operationId": "getUser",
         "produces": [
-          "application/xml",
           "application/json"
         ],
         "parameters": [
@@ -109,10 +111,9 @@
           "user"
         ],
         "summary": "Delete a user",
-        "description": "This can only be done by the logged in user.",
+        "description": "Deletes the user specified by the partner, product, and user id.  Only deletes the user from that instance, not all intances of the user id.",
         "operationId": "deleteUser",
         "produces": [
-          "application/xml",
           "application/json"
         ],
         "parameters": [
@@ -154,7 +155,6 @@
         "description": "Change Me",
         "operationId": "setConfig",
         "produces": [
-          "application/xml",
           "application/json"
         ],
         "responses": {
@@ -170,10 +170,9 @@
           "quota"
         ],
         "summary": "Get specified quota",
-        "description": "Change Me",
+        "description": "Gets the quota specified by the partner, product, user, and quota ids.",
         "operationId": "getQuota",
         "produces": [
-          "application/xml",
           "application/json"
         ],
         "parameters": [
@@ -202,6 +201,33 @@
             "name": "quotaId",
             "in": "path",
             "description": "The id of the quota to get. ",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/partnerApi/{apiKey}": {
+      "get": {
+        "tags": [
+          "partner"
+        ],
+        "summary": "Get specified partner based on API key",
+        "description": "Gets the spcified partner based on the unique API key since the partner id is unknown to the partner.",
+        "operationId": "getPartner",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "apiKey",
+            "in": "path",
+            "description": "The API key provided for the partner.",
             "required": true,
             "type": "string"
           }
