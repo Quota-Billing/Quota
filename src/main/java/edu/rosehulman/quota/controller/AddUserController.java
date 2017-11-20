@@ -31,6 +31,7 @@ public class AddUserController implements Route {
       }
     } catch (Exception e) {
       e.printStackTrace();
+      throw e;
     }
     return "";
   }
