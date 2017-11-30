@@ -11,26 +11,26 @@ public class Application {
     get("/health", (request, response) -> "OK");
 
     // Consume an AddUser call from SDK/partner
-    post("partner/:partnerId/product/:productId/user/:userId", new AddUserController());
+    post("partnerApi/:apiKey/product/:productId/user/:userId", new AddUserController());
 
     // Consume a GetUser call from SDK/partner
-    get("partner/:partnerId/product/:productId/user/:userId", new GetUserController());
+    get("partnerApi/:apiKey/product/:productId/user/:userId", new GetUserController());
 
     // Consume a GetQuota call from SDK/partner
-    get("partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
+    get("partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
 
     // Consume a SetConfig call
     post("setConfig", new SetConfigController());
 
     // Consume DeleteUser call
-    delete("partner/:partnerId/product/:productId/user/:userId", new DeleteUserController());
+    delete("partnerApi/:apiKey/product/:productId/user/:userId", new DeleteUserController());
 
     // TODO change this to accept billing requests
     // Billing calls this endpoint
     //    get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
 
     // increment quota
-    post("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new IncrementQuotaController());
+    post("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new IncrementQuotaController());
 
     // Consume a GetPartner call from SDK/partner
     get("partnerApi/:apiKey", new GetPartnerByApiController());

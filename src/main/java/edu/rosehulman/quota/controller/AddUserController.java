@@ -13,10 +13,12 @@ public class AddUserController implements Route {
   @Override
   public Object handle(Request request, Response response) throws Exception {
     try {
-      String partnerId = request.params(":partnerId");
+      String apiKey = request.params(":apiKey");
       String productId = request.params(":productId");
       String userId = request.params(":userId");
 
+      String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
+      
       User user = new User();
       user.setPartnerId(partnerId);
       user.setProductId(productId);

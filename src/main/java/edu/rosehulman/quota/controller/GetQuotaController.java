@@ -15,10 +15,12 @@ import spark.Route;
 public class GetQuotaController implements Route {
   @Override
   public Object handle(Request request, Response response) throws Exception {
-    String partnerId = request.params(":partnerId");
+    String apiKey = request.params(":apiKey");
     String productId = request.params(":productId");
     String userId = request.params(":userId");
     String quotaId = request.params(":quotaId");
+
+    String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
 
     if (!Database.getInstance().getQuota(partnerId, productId, quotaId).isPresent()) {
       response.status(404);

@@ -18,11 +18,13 @@ public class IncrementQuotaController implements Route {
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
-    String partnerId = request.params(":partnerId");
+    String apiKey = request.params(":apiKey");
     String productId = request.params(":productId");
     String userId = request.params(":userId");
     String quotaId = request.params(":quotaId");
 
+    String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
+    
     List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
     if (tiers.isEmpty()) {
       response.status(404);
