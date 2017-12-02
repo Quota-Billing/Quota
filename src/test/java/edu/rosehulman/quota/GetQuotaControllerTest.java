@@ -13,6 +13,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import edu.rosehulman.quota.controller.GetQuotaController;
+import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.Quota;
 import spark.Request;
 import spark.Response;
@@ -28,12 +29,16 @@ public class GetQuotaControllerTest {
     when(Database.getInstance()).thenReturn(database);
 
     Quota quota = mock(Quota.class);
+    Partner partner = mock(Partner.class);
 
+    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.of(partner));
+    when(partner.getPartnerId()).thenReturn("partner_id");
+    
     when(database.getQuota("partner_id", "product_id", "quota_id")).thenReturn(Optional.of(quota));
     when(database.getQuota("partner_id", "product_id", "bad_quota_id")).thenReturn(Optional.empty());
 
     Request request = mock(Request.class);
-    when(request.params(":partnerId")).thenReturn("partner_id");
+    when(request.params(":apiKey")).thenReturn("apiKey");
     when(request.params(":productId")).thenReturn("product_id");
     when(request.params(":userId")).thenReturn("user_id");
     when(request.params(":quotaId")).thenReturn("quota_id");

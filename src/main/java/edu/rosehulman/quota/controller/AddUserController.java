@@ -18,7 +18,7 @@ public class AddUserController implements Route {
       String userId = request.params(":userId");
 
       String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
-      
+
       User user = new User();
       user.setPartnerId(partnerId);
       user.setProductId(productId);
