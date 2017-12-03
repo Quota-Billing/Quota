@@ -29,8 +29,11 @@ public class Application {
     // Billing calls this endpoint
     //    get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
 
-    // increment quota
+    // increment quota by one
     post("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new IncrementQuotaController());
+
+    // increment quota by many
+    post("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId/count/:count", new IncrementQuotaController());
 
     // Consume a GetPartner call from SDK/partner
     get("partnerApi/:apiKey", new GetPartnerByApiController());
