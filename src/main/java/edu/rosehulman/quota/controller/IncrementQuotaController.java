@@ -14,6 +14,9 @@ import java.util.Optional;
 
 import org.apache.http.HttpException;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 public class IncrementQuotaController implements Route {
 
   @Override
@@ -22,7 +25,12 @@ public class IncrementQuotaController implements Route {
     String productId = request.params(":productId");
     String userId = request.params(":userId");
     String quotaId = request.params(":quotaId");
-    String count = request.params(":count");
+    String body = request.body();
+    String count = null;
+    if (!body.isEmpty()) {
+      JsonObject partnerJsonObject = new JsonParser().parse(body).getAsJsonObject();
+      count = partnerJsonObject.get("count").getAsString();
+    }
 
     List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
     if (tiers.isEmpty()) {
