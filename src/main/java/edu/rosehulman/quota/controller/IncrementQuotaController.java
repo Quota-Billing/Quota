@@ -25,12 +25,6 @@ public class IncrementQuotaController implements Route {
     String productId = request.params(":productId");
     String userId = request.params(":userId");
     String quotaId = request.params(":quotaId");
-    String body = request.body();
-    String count = null;
-    if (!body.isEmpty()) {
-      JsonObject partnerJsonObject = new JsonParser().parse(body).getAsJsonObject();
-      count = partnerJsonObject.get("count").getAsString();
-    }
 
     List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
     if (tiers.isEmpty()) {
@@ -65,11 +59,12 @@ public class IncrementQuotaController implements Route {
     }
 
     // See if adding one to the quota would go above the quota
-    BigInteger newValue = value.add(BigInteger.ONE);
-    if (count != null) {
-      newValue = value.add(new BigInteger(count));
+    BigInteger incrementedValue = value.add(BigInteger.ONE);
+    if (!request.body().isEmpty()) {
+      JsonObject partnerJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
+      incrementedValue = value.add(new BigInteger(partnerJsonObject.get("count").getAsString()));
     }
-    if (newValue.compareTo(max) > 0) {
+    if (incrementedValue.compareTo(max) > 0) {
       // send to billing
       String bill = BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId);
       if (bill != null) {
@@ -81,7 +76,7 @@ public class IncrementQuotaController implements Route {
     }
 
     // Save the new value to the database
-    userTier.setValue(newValue.toString());
+    userTier.setValue(incrementedValue.toString());
     boolean updated = Database.getInstance().updateUserTier(userTier);
 
     if (updated) {
