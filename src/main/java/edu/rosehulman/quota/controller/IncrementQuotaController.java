@@ -14,6 +14,9 @@ import java.util.Optional;
 
 import org.apache.http.HttpException;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 public class IncrementQuotaController implements Route {
 
   @Override
@@ -56,8 +59,12 @@ public class IncrementQuotaController implements Route {
     }
 
     // See if adding one to the quota would go above the quota
-    BigInteger valuePlusOne = value.add(BigInteger.ONE);
-    if (valuePlusOne.compareTo(max) > 0) {
+    BigInteger incrementedValue = value.add(BigInteger.ONE);
+    if (!request.body().isEmpty()) {
+      JsonObject partnerJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
+      incrementedValue = value.add(new BigInteger(partnerJsonObject.get("count").getAsString()));
+    }
+    if (incrementedValue.compareTo(max) > 0) {
       // send to billing
       String bill = BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId);
       if (bill != null) {
@@ -69,7 +76,7 @@ public class IncrementQuotaController implements Route {
     }
 
     // Save the new value to the database
-    userTier.setValue(valuePlusOne.toString());
+    userTier.setValue(incrementedValue.toString());
     boolean updated = Database.getInstance().updateUserTier(userTier);
 
     if (updated) {
