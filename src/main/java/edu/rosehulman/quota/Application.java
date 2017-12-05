@@ -11,7 +11,7 @@ public class Application {
     get("/health", (request, response) -> "OK");
 
     // Consume an AddUser call from SDK/partner
-    post("partner/:partnerId/product/:productId/user/:userId", new AddUserController());
+    post("partner/:partnerId/product/:productId/user", new AddUserController());
 
     // Consume a GetUser call from SDK/partner
     get("partner/:partnerId/product/:productId/user/:userId", new GetUserController());

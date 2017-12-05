@@ -1,5 +1,7 @@
 package edu.rosehulman.quota.controller;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.client.SharedServiceClient;
 import edu.rosehulman.quota.model.User;
@@ -12,26 +14,23 @@ public class AddUserController implements Route {
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
-    try {
-      String partnerId = request.params(":partnerId");
-      String productId = request.params(":productId");
-      String userId = request.params(":userId");
+    String partnerId = request.params(":partnerId");
+    String productId = request.params(":productId");
 
-      User user = new User();
-      user.setPartnerId(partnerId);
-      user.setProductId(productId);
-      user.setUserId(userId);
+    JsonObject userJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
+    String userId = userJsonObject.get("id").getAsString();
 
-      Database.getInstance().addUser(user);
+    User user = new User();
+    user.setPartnerId(partnerId);
+    user.setProductId(productId);
+    user.setUserId(userId);
 
-      // Send the user to Shared
-      boolean sharedRes = SharedServiceClient.getInstance().addUser(partnerId, productId, userId);
-      if (!sharedRes) {
-        throw new HttpException("Adding user to shared server failed");
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw e;
+    Database.getInstance().addUser(user);
+
+    // Send the user to Shared
+    boolean sharedRes = SharedServiceClient.getInstance().addUser(partnerId, productId, userId);
+    if (!sharedRes) {
+      throw new HttpException("Adding user to shared server failed");
     }
     return "";
   }
