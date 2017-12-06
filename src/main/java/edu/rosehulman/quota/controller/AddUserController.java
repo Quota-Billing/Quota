@@ -1,5 +1,7 @@
 package edu.rosehulman.quota.controller;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.client.SharedServiceClient;
 import edu.rosehulman.quota.model.User;
@@ -15,9 +17,11 @@ public class AddUserController implements Route {
     try {
       String apiKey = request.params(":apiKey");
       String productId = request.params(":productId");
-      String userId = request.params(":userId");
 
       String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
+
+      JsonObject userJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
+      String userId = userJsonObject.get("id").getAsString();
 
       User user = new User();
       user.setPartnerId(partnerId);
