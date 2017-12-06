@@ -14,23 +14,30 @@ public class AddUserController implements Route {
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
-    String partnerId = request.params(":partnerId");
-    String productId = request.params(":productId");
+    try {
+      String apiKey = request.params(":apiKey");
+      String productId = request.params(":productId");
 
-    JsonObject userJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
-    String userId = userJsonObject.get("id").getAsString();
+      String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
 
-    User user = new User();
-    user.setPartnerId(partnerId);
-    user.setProductId(productId);
-    user.setUserId(userId);
+      JsonObject userJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
+      String userId = userJsonObject.get("id").getAsString();
 
-    Database.getInstance().addUser(user);
+      User user = new User();
+      user.setPartnerId(partnerId);
+      user.setProductId(productId);
+      user.setUserId(userId);
 
-    // Send the user to Shared
-    boolean sharedRes = SharedServiceClient.getInstance().addUser(partnerId, productId, userId);
-    if (!sharedRes) {
-      throw new HttpException("Adding user to shared server failed");
+      Database.getInstance().addUser(user);
+
+      // Send the user to Shared
+      boolean sharedRes = SharedServiceClient.getInstance().addUser(partnerId, productId, userId);
+      if (!sharedRes) {
+        throw new HttpException("Adding user to shared server failed");
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw e;
     }
     return "";
   }

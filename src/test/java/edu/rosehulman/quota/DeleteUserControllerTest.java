@@ -2,6 +2,8 @@ package edu.rosehulman.quota;
 
 import edu.rosehulman.quota.client.SharedServiceClient;
 import edu.rosehulman.quota.controller.DeleteUserController;
+import edu.rosehulman.quota.model.Partner;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -15,6 +17,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+
+import java.util.Optional;
 
 import org.apache.http.HttpException;
 
@@ -31,12 +35,19 @@ public class DeleteUserControllerTest {
     DeleteUserController deleteUserController = new DeleteUserController();
     Request request = mock(Request.class);
     Response response = mock(Response.class);
-
-    when(request.params(":partnerId")).thenReturn("part_id1");
+    
+    
+    when(request.params(":apiKey")).thenReturn("apiKey");
     when(request.params(":productId")).thenReturn("prod_id1");
     when(request.params(":userId")).thenReturn("user_id1");
-    when(response.status()).thenReturn(200); // or 202
+    when(response.status()).thenReturn(200);
 
+    Partner partner = mock(Partner.class);
+
+    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.of(partner));
+    when(partner.getPartnerId()).thenReturn("part_id1");
+    
+    
     mockStatic(SharedServiceClient.class);
     SharedServiceClient client = mock(SharedServiceClient.class);
     when(SharedServiceClient.getInstance()).thenReturn(client);
