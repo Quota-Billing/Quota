@@ -34,12 +34,11 @@ public class SetQuotaController implements Route {
 
     Optional<UserTier> userTierOptional = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId, firstTier.getTierId());
     if (!userTierOptional.isPresent()) {
-      System.out.println("");
       response.status(404);
       return "";
     }
     UserTier userTier = userTierOptional.get();
-    BigInteger resetValue = (BigInteger.ZERO);
+    BigInteger resetValue = BigInteger.ZERO;
     if (!request.body().isEmpty()) {
       JsonObject partnerJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
       resetValue = (new BigInteger(partnerJsonObject.get("count").getAsString()));

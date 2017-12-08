@@ -27,7 +27,7 @@ public class IncrementQuotaController implements Route {
     String quotaId = request.params(":quotaId");
 
     String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
-    
+
     List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
     if (tiers.isEmpty()) {
       response.status(404);
@@ -37,7 +37,6 @@ public class IncrementQuotaController implements Route {
 
     Optional<UserTier> userTierOptional = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId, firstTier.getTierId());
     if (!userTierOptional.isPresent()) {
-      System.out.println("");
       response.status(404);
       return "";
     }
