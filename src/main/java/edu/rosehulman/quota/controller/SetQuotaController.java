@@ -1,7 +1,6 @@
 package edu.rosehulman.quota.controller;
 
 import edu.rosehulman.quota.Database;
-import edu.rosehulman.quota.client.BillingClient;
 import edu.rosehulman.quota.model.Tier;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
@@ -12,12 +11,10 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.http.HttpException;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class IncrementQuotaController implements Route {
+public class SetQuotaController implements Route {
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
@@ -41,43 +38,14 @@ public class IncrementQuotaController implements Route {
       return "";
     }
     UserTier userTier = userTierOptional.get();
-
-    // TODO: For now we use BigInteger as the data type for the value and max
-    BigInteger value = new BigInteger(userTier.getValue());
-    BigInteger max = new BigInteger(firstTier.getMax());
-
-    // See if we are at or above the quota already
-    if (value.compareTo(max) >= 0) {
-      // TODO should we only send once or send if above also just to be safe?
-      // send to billing
-      String bill = BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId, userTier.getTierId());
-      if (bill != null) {
-        response.status(403);
-        return bill;
-      } else {
-        throw new HttpException("Quota reached Billing endpoint failed");
-      }
-    }
-
-    // See if adding one to the quota would go above the quota
-    BigInteger incrementedValue = value.add(BigInteger.ONE);
+    BigInteger resetValue = BigInteger.ZERO;
     if (!request.body().isEmpty()) {
       JsonObject partnerJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
-      incrementedValue = value.add(new BigInteger(partnerJsonObject.get("count").getAsString()));
-    }
-    if (incrementedValue.compareTo(max) > 0) {
-      // send to billing
-      String bill = BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId, userTier.getTierId());
-      if (bill != null) {
-        response.status(403);
-        return bill;
-      } else {
-        throw new HttpException("Quota reached Billing endpoint failed");
-      }
+      resetValue = (new BigInteger(partnerJsonObject.get("count").getAsString()));
     }
 
     // Save the new value to the database
-    userTier.setValue(incrementedValue.toString());
+    userTier.setValue(resetValue.toString());
     boolean updated = Database.getInstance().updateUserTier(userTier);
 
     if (updated) {

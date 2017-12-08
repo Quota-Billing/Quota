@@ -27,7 +27,8 @@ public class Application {
 
     // TODO change this to accept billing requests
     // Billing calls this endpoint
-    //    get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
+    // get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new
+    // GetQuotaController());
 
     // increment quota
     post("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new IncrementQuotaController());
@@ -35,45 +36,48 @@ public class Application {
     // Consume a GetPartner call from SDK/partner
     get("partnerApi/:apiKey", new GetPartnerByApiController());
 
-//    try {
-//      Partner partner = new Partner();
-//      partner.setApiKey("apiKey");
-//      partner.setPartnerId("partnerId");
-//      Database.getInstance().addPartner(partner);
-//
-//      Product product = new Product();
-//      product.setPartnerId("partnerId");
-//      product.setProductId("productId");
-//      product.setProductName("productName");
-//      Database.getInstance().addProduct(product);
-//
-//      Quota quota = new Quota();
-//      quota.setQuotaId("quotaId");
-//      quota.setQuotaName("quotaName");
-//      quota.setPartnerId("partnerId");
-//      quota.setProductId("productId");
-//      quota.setType("numerical");
-//      Database.getInstance().addQuota(quota);
-//
-//      User user = new User();
-//      user.setPartnerId("partnerId");
-//      user.setProductId("productId");
-//      user.setUserId("userId");
-//      Database.getInstance().addUser(user);
-//
-//      Tier tier = new Tier();
-//      tier.setPartnerId("partnerId");
-//      tier.setProductId("productId");
-//      tier.setQuotaId("quotaId");
-//      tier.setTierId("tierId");
-//      tier.setTierName("tierName");
-//      tier.setMax("5");
-//      tier.setPrice("23.00");
-//      Database.getInstance().addTier(tier);
-//
-//      // UserTier automatically populated
-//    } catch (Exception e) {
-//      e.printStackTrace();
-//    }
+    // reset quota call from billing
+    put("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new SetQuotaController());
+
+    // try {
+    // Partner partner = new Partner();
+    // partner.setApiKey("apiKey");
+    // partner.setPartnerId("partnerId");
+    // Database.getInstance().addPartner(partner);
+    //
+    // Product product = new Product();
+    // product.setPartnerId("partnerId");
+    // product.setProductId("productId");
+    // product.setProductName("productName");
+    // Database.getInstance().addProduct(product);
+    //
+    // Quota quota = new Quota();
+    // quota.setQuotaId("quotaId");
+    // quota.setQuotaName("quotaName");
+    // quota.setPartnerId("partnerId");
+    // quota.setProductId("productId");
+    // quota.setType("numerical");
+    // Database.getInstance().addQuota(quota);
+    //
+    // User user = new User();
+    // user.setPartnerId("partnerId");
+    // user.setProductId("productId");
+    // user.setUserId("userId");
+    // Database.getInstance().addUser(user);
+    //
+    // Tier tier = new Tier();
+    // tier.setPartnerId("partnerId");
+    // tier.setProductId("productId");
+    // tier.setQuotaId("quotaId");
+    // tier.setTierId("tierId");
+    // tier.setTierName("tierName");
+    // tier.setMax("5");
+    // tier.setPrice("23.00");
+    // Database.getInstance().addTier(tier);
+    //
+    // // UserTier automatically populated
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
   }
 }
