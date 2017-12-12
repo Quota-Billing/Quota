@@ -17,9 +17,8 @@ public class SharedServiceClient {
 
   public boolean addUser(String partnerId, String productId, String userId) {
     try {
-      // TODO: Put Shared Server path in config and in here
-       HttpResponse<String> response = Unirest.post(SystemConfig.getInstance().getSharedServerPath() + "/partner/{partnerId}/product/{productId}/user/{userId}").routeParam("partnerId", partnerId).routeParam("productId", productId).routeParam("userId", userId).asString();
-       return response.getStatus() == 200;
+      HttpResponse<String> response = Unirest.post(SystemConfig.getInstance().getSharedServerPath() + "/partner/{partnerId}/product/{productId}/user/{userId}").routeParam("partnerId", partnerId).routeParam("productId", productId).routeParam("userId", userId).asString();
+      return response.getStatus() == 200;
     } catch (Exception e) {
       return false;
     }
@@ -27,9 +26,8 @@ public class SharedServiceClient {
 
   public boolean deleteUser(String partnerId, String productId, String userId) {
     try {
-      // TODO: Put Shared Server path in config and in here
-       HttpResponse<String> response = Unirest.delete(SystemConfig.getInstance().getSharedServerPath() + "/partner/{partnerId}/product/{productId}/user/{userId}").routeParam("partnerId", partnerId).routeParam("productId", productId).routeParam("userId", userId).asString();
-       return response.getStatus() == 200;
+      HttpResponse<String> response = Unirest.delete(SystemConfig.getInstance().getSharedServerPath() + "/partner/{partnerId}/product/{productId}/user/{userId}").routeParam("partnerId", partnerId).routeParam("productId", productId).routeParam("userId", userId).asString();
+      return response.getStatus() == 200;
     } catch (Exception e) {
       return false;
     }
