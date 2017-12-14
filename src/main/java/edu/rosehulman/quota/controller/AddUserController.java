@@ -3,6 +3,7 @@ package edu.rosehulman.quota.controller;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.rosehulman.quota.Database;
+import edu.rosehulman.quota.Logging;
 import edu.rosehulman.quota.client.SharedServiceClient;
 import edu.rosehulman.quota.model.User;
 import org.apache.http.HttpException;
@@ -33,7 +34,9 @@ public class AddUserController implements Route {
       // Send the user to Shared
       boolean sharedRes = SharedServiceClient.getInstance().addUser(partnerId, productId, userId);
       if (!sharedRes) {
-        throw new HttpException("Adding user to shared server failed");
+        HttpException e = new HttpException("Adding user to shared server failed");
+        Logging.errorLog(e);
+        throw e;
       }
     } catch (Exception e) {
       e.printStackTrace();
