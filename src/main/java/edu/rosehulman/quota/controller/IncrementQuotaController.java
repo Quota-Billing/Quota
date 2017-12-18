@@ -1,6 +1,7 @@
 package edu.rosehulman.quota.controller;
 
 import edu.rosehulman.quota.Database;
+import edu.rosehulman.quota.Logging;
 import edu.rosehulman.quota.client.BillingClient;
 import edu.rosehulman.quota.model.Tier;
 import edu.rosehulman.quota.model.UserTier;
@@ -55,7 +56,8 @@ public class IncrementQuotaController implements Route {
         response.status(403);
         return bill;
       } else {
-        throw new HttpException("Quota reached Billing endpoint failed");
+        HttpException e = new HttpException("Quota reached Billing endpoint failed");
+        Logging.errorLog(e);
       }
     }
 
@@ -72,7 +74,8 @@ public class IncrementQuotaController implements Route {
         response.status(403);
         return bill;
       } else {
-        throw new HttpException("Quota reached Billing endpoint failed");
+        HttpException e = new HttpException("Quota reached Billing endpoint failed");
+        Logging.errorLog(e);
       }
     }
 
