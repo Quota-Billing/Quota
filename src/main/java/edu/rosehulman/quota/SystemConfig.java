@@ -37,4 +37,8 @@ public class SystemConfig {
   public String getSharedServerPath() {
     return config.getSharedServerPath();
   }
+
+  public String getBillingServerPath() {
+    return config.getBillingServerPath();
+  }
 }

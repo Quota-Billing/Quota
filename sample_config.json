@@ -1,0 +1,6 @@
+{
+  "sharedServerPath":"http://localhost:8084",
+  "databaseUrl":"jdbc:postgresql://localhost:5432",
+  "billingServerPath":"http://localhost:8088"
+}
+
