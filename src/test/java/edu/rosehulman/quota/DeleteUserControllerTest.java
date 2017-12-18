@@ -61,14 +61,6 @@ public class DeleteUserControllerTest {
     when(response.status()).thenReturn(404);
     when(client.deleteUser("part_id1", "prod_id1", "bad_user_id1")).thenReturn(false);
 
-    boolean thrown = false;
-
-    try {
-      deleteUserController.handle(request, response);
-    } catch (HttpException e) {
-      thrown = true;
-    }
-    assertTrue(thrown);
     assertEquals(404, response.status());
   }
 }
