@@ -39,6 +39,9 @@ public class Application {
     // reset quota call from billing
     put("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new SetQuotaController());
 
+    // Consume a setUserTier call from SDK/partner
+    put("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId/tier/:tierId", new SetUserTierController());
+    
     // try {
     // Partner partner = new Partner();
     // partner.setApiKey("apiKey");
