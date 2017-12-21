@@ -27,6 +27,9 @@ public class Tier {
   @DatabaseField(columnName = "price")
   private String price;
 
+  @DatabaseField(columnName = "grace_extra")
+  private String graceExtra;
+
   public String getPartnerId() {
     return partnerId;
   }
@@ -81,5 +84,13 @@ public class Tier {
 
   public void setPrice(String price) {
     this.price = price;
+  }
+
+  public String getGraceExtra() {
+    return graceExtra;
+  }
+
+  public void setGraceExtra(String graceExtra) {
+    this.graceExtra = graceExtra;
   }
 }
