@@ -66,6 +66,7 @@ public class SetConfigController implements Route {
           String tierName = tierJsonObject.get("name").getAsString();
           String max = tierJsonObject.get("max").getAsString();
           String price = tierJsonObject.get("price").getAsString();
+          String graceExtra = tierJsonObject.get("graceExtra").getAsString();
 
           Tier tier = new Tier();
           tier.setPartnerId(partnerId);
@@ -75,6 +76,8 @@ public class SetConfigController implements Route {
           tier.setTierName(tierName);
           tier.setMax(max);
           tier.setPrice(price);
+          if (graceExtra != null)
+            tier.setGraceExtra(graceExtra);
 
           addTierToDatabase(tier);
         });
