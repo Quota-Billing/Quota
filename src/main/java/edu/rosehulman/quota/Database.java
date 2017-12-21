@@ -144,6 +144,12 @@ public class Database {
     updateBuilder.where().eq("partner_id", userTier.getPartnerId()).and().eq("product_id", userTier.getProductId()).and().eq("user_id", userTier.getUserId()).and().eq("quota_id", userTier.getQuotaId()).and().eq("tier_id", userTier.getTierId());
     return updateBuilder.update() == 1;
   }
+  
+  public boolean deleteUserTier(String partnerId, String productId, String userId, String quotaId, String tierId) throws Exception {
+    DeleteBuilder<UserTier, String> builder = getUserTierDao().deleteBuilder();
+    builder.where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("user_id", userId).and().eq("quota_id", quotaId).and().eq("tier_id", tierId);
+    return builder.delete() > 0;
+  }
 
   private Dao<Partner, String> getPartnerDao() throws Exception {
     return DaoManager.createDao(connectionSource, Partner.class);
