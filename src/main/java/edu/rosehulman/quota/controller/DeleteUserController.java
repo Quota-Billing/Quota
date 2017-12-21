@@ -1,11 +1,14 @@
 package edu.rosehulman.quota.controller;
 
 import edu.rosehulman.quota.Database;
+import edu.rosehulman.quota.Logging;
 import edu.rosehulman.quota.client.SharedServiceClient;
 import org.apache.http.HttpException;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+
+import static spark.Spark.halt;
 
 public class DeleteUserController implements Route {
 
@@ -19,13 +22,14 @@ public class DeleteUserController implements Route {
 
     // delete the given user
     if (!Database.getInstance().deleteUser(partnerId, productId, userId)) {
-      response.status(404);
+      throw halt(404);
     }
 
     // Send the delete message to Shared
     boolean sharedRes = SharedServiceClient.getInstance().deleteUser(partnerId, productId, userId);
     if (!sharedRes) {
-      throw new HttpException("Deleting user in shared server failed");
+      Logging.errorLog("Deleting user in shared server failed");
+      throw halt(500);
     }
 
     return "";

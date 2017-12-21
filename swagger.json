@@ -210,6 +210,98 @@
             "description": "successful operation"
           }
         }
+      },
+      "post": {
+        "tags": [
+          "quota"
+        ],
+        "summary": "Increments specified quota.",
+        "description": "Increments the quota specified by the partner, product, user, and quota ids.  Increments by the value given in the body.  If it is empty, it defaults to increment by 1.",
+        "operationId": "incrementQuota",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "partnerId",
+            "in": "path",
+            "description": "The id of the partner that the quota belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "The id of the product that the quota belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The id of the user the quota belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "quotaId",
+            "in": "path",
+            "description": "The id of the quota to increment. ",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "quota"
+        ],
+        "summary": "Sets the specified quota.",
+        "description": "Sets the quota specified by the partner, product, user, and quota ids. Sets quota to value specified in body.  If body is empty, resets quota to 0.",
+        "operationId": "setQuota",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "partnerId",
+            "in": "path",
+            "description": "The id of the partner that the quota belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "The id of the product that the quota belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The id of the user the quota belongs to. ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "quotaId",
+            "in": "path",
+            "description": "The id of the quota to set. ",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
       }
     },
     "/partnerApi/{apiKey}": {

@@ -14,6 +14,8 @@ import java.util.Optional;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import static spark.Spark.halt;
+
 public class SetQuotaController implements Route {
 
   @Override
@@ -27,15 +29,13 @@ public class SetQuotaController implements Route {
 
     List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
     if (tiers.isEmpty()) {
-      response.status(404);
-      return "";
+      throw halt(404);
     }
     Tier firstTier = tiers.get(0); // TODO: For now we just get the first tier
 
     Optional<UserTier> userTierOptional = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId, firstTier.getTierId());
     if (!userTierOptional.isPresent()) {
-      response.status(404);
-      return "";
+      throw halt(404);
     }
     UserTier userTier = userTierOptional.get();
     BigInteger resetValue = BigInteger.ZERO;
@@ -48,12 +48,10 @@ public class SetQuotaController implements Route {
     userTier.setValue(resetValue.toString());
     boolean updated = Database.getInstance().updateUserTier(userTier);
 
-    if (updated) {
-      response.status(200);
-      return "";
+    if (!updated) {
+      throw halt(500);
     }
 
-    response.status(500);
     return "";
   }
 }

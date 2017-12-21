@@ -5,6 +5,8 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import static spark.Spark.halt;
+
 public class GetUserController implements Route {
 
   @Override
@@ -16,7 +18,7 @@ public class GetUserController implements Route {
     String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
 
     if (!Database.getInstance().getUser(partnerId, productId, userId).isPresent()) {
-      response.status(404);
+      throw halt(404);
     }
 
     return "";

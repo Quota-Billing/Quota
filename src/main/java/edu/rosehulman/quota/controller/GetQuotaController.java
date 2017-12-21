@@ -12,6 +12,8 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import static spark.Spark.halt;
+
 public class GetQuotaController implements Route {
   @Override
   public Object handle(Request request, Response response) throws Exception {
@@ -23,7 +25,7 @@ public class GetQuotaController implements Route {
     String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
 
     if (!Database.getInstance().getQuota(partnerId, productId, quotaId).isPresent()) {
-      response.status(404);
+      throw halt(404);
     }
 
     List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
