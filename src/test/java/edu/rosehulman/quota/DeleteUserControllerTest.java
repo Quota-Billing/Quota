@@ -23,7 +23,7 @@ import java.util.Optional;
 import org.apache.http.HttpException;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Database.class, Request.class, Response.class, SharedServiceClient.class })
+@PrepareForTest({Database.class, Request.class, Response.class, SharedServiceClient.class})
 public class DeleteUserControllerTest {
 
   @Test
@@ -35,8 +35,7 @@ public class DeleteUserControllerTest {
     DeleteUserController deleteUserController = new DeleteUserController();
     Request request = mock(Request.class);
     Response response = mock(Response.class);
-    
-    
+
     when(request.params(":apiKey")).thenReturn("apiKey");
     when(request.params(":productId")).thenReturn("prod_id1");
     when(request.params(":userId")).thenReturn("user_id1");
@@ -44,10 +43,11 @@ public class DeleteUserControllerTest {
 
     Partner partner = mock(Partner.class);
 
-    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.of(partner));
     when(partner.getPartnerId()).thenReturn("part_id1");
-    
-    
+    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.of(partner));
+
+    when(database.deleteUser("part_id1", "prod_id1", "user_id1")).thenReturn(true);
+
     mockStatic(SharedServiceClient.class);
     SharedServiceClient client = mock(SharedServiceClient.class);
     when(SharedServiceClient.getInstance()).thenReturn(client);
