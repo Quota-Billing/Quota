@@ -1,6 +1,7 @@
 package edu.rosehulman.quota;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -15,11 +16,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import edu.rosehulman.quota.controller.GetQuotaController;
 import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.Quota;
+import spark.HaltException;
 import spark.Request;
 import spark.Response;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Database.class, Request.class, Response.class })
+@PrepareForTest({Database.class, Request.class, Response.class})
 public class GetQuotaControllerTest {
 
   @Test
@@ -33,7 +35,7 @@ public class GetQuotaControllerTest {
 
     when(database.getPartnerByApi("apiKey")).thenReturn(Optional.of(partner));
     when(partner.getPartnerId()).thenReturn("partner_id");
-    
+
     when(database.getQuota("partner_id", "product_id", "quota_id")).thenReturn(Optional.of(quota));
     when(database.getQuota("partner_id", "product_id", "bad_quota_id")).thenReturn(Optional.empty());
 
@@ -53,7 +55,12 @@ public class GetQuotaControllerTest {
     when(request.params(":quotaId")).thenReturn("bad_quota_id");
     when(response.status()).thenReturn(404);
 
-    getQuotaController.handle(request, response);
-    assertEquals(404, response.status());
+    try {
+      getQuotaController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, response.status());
+      return;
+    }
+    fail("Exception not thrown");
   }
 }

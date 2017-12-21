@@ -18,6 +18,8 @@ import org.apache.http.HttpException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import static spark.Spark.halt;
+
 public class IncrementQuotaController implements Route {
 
   @Override
@@ -31,15 +33,13 @@ public class IncrementQuotaController implements Route {
 
     List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
     if (tiers.isEmpty()) {
-      response.status(404);
-      return "";
+      throw halt(404);
     }
     Tier firstTier = tiers.get(0); // TODO: For now we just get the first tier
 
     Optional<UserTier> userTierOptional = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId, firstTier.getTierId());
     if (!userTierOptional.isPresent()) {
-      response.status(404);
-      return "";
+      throw halt(404);
     }
     UserTier userTier = userTierOptional.get();
 
@@ -53,11 +53,10 @@ public class IncrementQuotaController implements Route {
       // send to billing
       String bill = BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId, userTier.getTierId());
       if (bill != null) {
-        response.status(403);
-        return bill;
+        throw halt(403, bill);
       } else {
-        HttpException e = new HttpException("Quota reached Billing endpoint failed");
-        Logging.errorLog(e);
+        Logging.errorLog("Quota reached Billing endpoint failed");
+        throw halt(500);
       }
     }
 
@@ -71,11 +70,10 @@ public class IncrementQuotaController implements Route {
       // send to billing
       String bill = BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId, userTier.getTierId());
       if (bill != null) {
-        response.status(403);
-        return bill;
+        throw halt(403, bill);
       } else {
-        HttpException e = new HttpException("Quota reached Billing endpoint failed");
-        Logging.errorLog(e);
+        Logging.errorLog("Quota reached Billing endpoint failed");
+        throw halt(500);
       }
     }
 
@@ -83,12 +81,10 @@ public class IncrementQuotaController implements Route {
     userTier.setValue(incrementedValue.toString());
     boolean updated = Database.getInstance().updateUserTier(userTier);
 
-    if (updated) {
-      response.status(200);
-      return "";
+    if (!updated) {
+      throw halt(500);
     }
 
-    response.status(500);
     return "";
   }
 }

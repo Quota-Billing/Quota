@@ -8,6 +8,8 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import static spark.Spark.halt;
+
 public class GetPartnerByApiController implements Route {
 
   @Override
@@ -16,8 +18,7 @@ public class GetPartnerByApiController implements Route {
 
     Optional<Partner> optPartner = Database.getInstance().getPartnerByApi(apiKey);
     if (!optPartner.isPresent()) {
-      response.status(404);
-      return "";
+      throw halt(404);
     }
 
     return optPartner.get().getPartnerId();
