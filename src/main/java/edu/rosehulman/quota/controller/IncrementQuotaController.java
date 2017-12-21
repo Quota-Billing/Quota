@@ -46,9 +46,11 @@ public class IncrementQuotaController implements Route {
     // TODO: For now we use BigInteger as the data type for the value and max
     BigInteger value = new BigInteger(userTier.getValue());
     BigInteger max = new BigInteger(firstTier.getMax());
+    BigInteger graceExtra = new BigInteger(firstTier.getGraceExtra());
+    BigInteger maxPlusGraceExtra = max.add(graceExtra);
 
     // See if we are at or above the quota already
-    if (value.compareTo(max) >= 0) {
+    if (value.compareTo(maxPlusGraceExtra) >= 0) {
       // TODO should we only send once or send if above also just to be safe?
       // send to billing
       String bill = BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId, userTier.getTierId());
@@ -67,7 +69,7 @@ public class IncrementQuotaController implements Route {
       JsonObject partnerJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
       incrementedValue = value.add(new BigInteger(partnerJsonObject.get("count").getAsString()));
     }
-    if (incrementedValue.compareTo(max) > 0) {
+    if (incrementedValue.compareTo(maxPlusGraceExtra) > 0) {
       // send to billing
       String bill = BillingClient.getInstance().quotaReached(partnerId, productId, userId, quotaId, userTier.getTierId());
       if (bill != null) {
