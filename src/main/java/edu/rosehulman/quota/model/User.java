@@ -15,6 +15,17 @@ public class User {
   @DatabaseField(columnName = "user_id")
   private String userId;
 
+  @DatabaseField(columnName = "frozen")
+  private boolean frozen;
+  
+  public boolean isFrozen() {
+    return frozen;
+  }
+
+  public void setFrozen(boolean frozen) {
+    this.frozen = frozen;
+  }
+
   public String getPartnerId() {
     return partnerId;
   }

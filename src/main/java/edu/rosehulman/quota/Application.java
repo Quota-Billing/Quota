@@ -7,11 +7,14 @@ import static spark.Spark.*;
 public class Application {
   public static void main(String[] args) throws Exception {
     port(8080);
-    
+
     get("/health", (request, response) -> "OK");
 
     // Consume an AddUser call from SDK/partner
     post("partnerApi/:apiKey/product/:productId/user", new AddUserController());
+
+    // Consume a (Un)FreezeUser call from Billing
+    post("partnerApi/:apiKey/product/:productId/user/:userId", new FreezeUserController());
 
     // Consume a GetUser call from SDK/partner
     get("partnerApi/:apiKey/product/:productId/user/:userId", new GetUserController());
@@ -41,7 +44,7 @@ public class Application {
 
     // Consume a setUserTier call from SDK/partner
     put("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId/tier/:tierId", new SetUserTierController());
-    
+
     // try {
     // Partner partner = new Partner();
     // partner.setApiKey("apiKey");
