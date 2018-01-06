@@ -1,4 +1,4 @@
-package edu.rosehulman.quota;
+package edu.rosehulman.quota.controller;
 
 import static spark.Spark.halt;
 
@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.model.User;
 import spark.Request;
 import spark.Response;
@@ -30,12 +31,12 @@ public class FreezeUserController implements Route {
     User user = userOptional.get();
 
     // assume that we are freezing user
-    boolean freezeUser = true;
+    boolean freeze = true;
     if (!request.body().isEmpty()) {
       JsonObject jsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
-      freezeUser = jsonObject.get("freezeUser").getAsBoolean();
+      freeze = jsonObject.get("freeze").getAsBoolean();
     }
-    user.setFrozen(freezeUser);
+    user.setFrozen(freeze);
     boolean updated = Database.getInstance().updateUser(user);
 
     if (!updated) {
