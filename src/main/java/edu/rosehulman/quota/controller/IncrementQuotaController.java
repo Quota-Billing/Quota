@@ -13,8 +13,6 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.http.HttpException;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 

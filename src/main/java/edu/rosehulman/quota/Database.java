@@ -92,6 +92,13 @@ public class Database {
     }
   }
 
+  public boolean updateUser(User user) throws Exception {
+    UpdateBuilder<User, String> updateBuilder = getUserDao().updateBuilder();
+    updateBuilder.updateColumnValue("frozen", user.isFrozen());
+    updateBuilder.where().eq("partner_id", user.getPartnerId()).and().eq("product_id", user.getProductId()).and().eq("user_id", user.getUserId());
+    return updateBuilder.update() == 1;
+  }
+
   public Optional<User> getUser(String partnerId, String productId, String userId) throws Exception {
     List<User> users = getUserDao().query(getUserDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("user_id", userId).prepare());
     return users.isEmpty() ? Optional.empty() : Optional.ofNullable(users.get(0));
@@ -144,7 +151,7 @@ public class Database {
     updateBuilder.where().eq("partner_id", userTier.getPartnerId()).and().eq("product_id", userTier.getProductId()).and().eq("user_id", userTier.getUserId()).and().eq("quota_id", userTier.getQuotaId()).and().eq("tier_id", userTier.getTierId());
     return updateBuilder.update() == 1;
   }
-  
+
   public boolean deleteUserTier(String partnerId, String productId, String userId, String quotaId, String tierId) throws Exception {
     DeleteBuilder<UserTier, String> builder = getUserTierDao().deleteBuilder();
     builder.where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("user_id", userId).and().eq("quota_id", quotaId).and().eq("tier_id", tierId);
