@@ -2,6 +2,7 @@ package edu.rosehulman.quota.controller;
 
 import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.model.Tier;
+import edu.rosehulman.quota.model.User;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
 import spark.Response;
@@ -35,7 +36,13 @@ public class IncrementQuotaController implements Route {
     }
     UserTier userTier = userTierOptional.get();
 
-    userTier.increment(firstTier, request);
+    Optional<User> userOptional = Database.getInstance().getUser(partnerId, productId, userId);
+    if (!userOptional.isPresent()) {
+      throw halt(404);
+    }
+    User user = userOptional.get();
+
+    userTier.increment(firstTier, request, user);
 
     return "";
   }

@@ -82,8 +82,13 @@ public class UserTier {
     this.value = value;
   }
 
-  public void increment(Tier firstTier, Request request) throws Exception {
+  public void increment(Tier firstTier, Request request, User user) throws Exception {
     // TODO: For now we use BigInteger as the data type for the value and max
+    // if user is frozen for any reason, no need to increment
+    if (user.isFrozen()) {
+      throw halt(403);
+    }
+
     BigInteger value = new BigInteger(this.value);
     BigInteger max = firstTier.calculateMax();
 
