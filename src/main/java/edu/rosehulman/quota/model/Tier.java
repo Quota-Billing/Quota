@@ -1,5 +1,7 @@
 package edu.rosehulman.quota.model;
 
+import java.math.BigInteger;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -92,5 +94,9 @@ public class Tier {
 
   public void setGraceExtra(String graceExtra) {
     this.graceExtra = graceExtra;
+  }
+
+  public BigInteger calculateMax() {
+    return new BigInteger(max).add(new BigInteger(graceExtra));
   }
 }
