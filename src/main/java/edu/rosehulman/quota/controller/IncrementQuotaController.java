@@ -2,7 +2,9 @@ package edu.rosehulman.quota.controller;
 
 import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.Logging;
+import edu.rosehulman.quota.StorageParser;
 import edu.rosehulman.quota.client.BillingClient;
+import edu.rosehulman.quota.model.Quota;
 import edu.rosehulman.quota.model.Tier;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
@@ -64,7 +66,13 @@ public class IncrementQuotaController implements Route {
     BigInteger incrementedValue = value.add(BigInteger.ONE);
     if (!request.body().isEmpty()) {
       JsonObject partnerJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
-      incrementedValue = value.add(new BigInteger(partnerJsonObject.get("count").getAsString()));
+      String valueToAdd = partnerJsonObject.get("count").getAsString();
+
+      Quota quota = Database.getInstance().getQuota(partnerId, productId, quotaId).get();
+      if (quota.getType().equals("storage")) {
+        valueToAdd = StorageParser.parse(valueToAdd);
+      }
+      incrementedValue = value.add(new BigInteger(valueToAdd));
     }
     if (incrementedValue.compareTo(maxPlusGraceExtra) > 0) {
       // send to billing

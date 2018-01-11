@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.rosehulman.quota.Database;
+import edu.rosehulman.quota.StorageParser;
 import edu.rosehulman.quota.exceptions.DatabaseException;
 import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.Product;
@@ -68,6 +69,12 @@ public class SetConfigController implements Route {
           String price = tierJsonObject.get("price").getAsString();
           String graceExtra = tierJsonObject.get("graceExtra").getAsString();
 
+          if ("storage".equals(type)) {
+            // convert to bytes
+            max = StorageParser.parse(max);
+            graceExtra = StorageParser.parse(graceExtra);
+          }
+          
           Tier tier = new Tier();
           tier.setPartnerId(partnerId);
           tier.setProductId(productId);
