@@ -11,35 +11,40 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import static spark.Spark.halt;
+
 public class AddUserController implements Route {
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
-    String apiKey = request.params(":apiKey");
-    String productId = request.params(":productId");
+    try {
+      String apiKey = request.params(":apiKey");
+      String productId = request.params(":productId");
 
-    String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
+      String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
 
-    JsonObject userJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
-    String userId = userJsonObject.get("id").getAsString();
+      JsonObject userJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
+      String userId = userJsonObject.get("id").getAsString();
 
-    User user = new User();
-    user.setPartnerId(partnerId);
-    user.setProductId(productId);
-    user.setUserId(userId);
+      User user = new User();
+      user.setPartnerId(partnerId);
+      user.setProductId(productId);
+      user.setUserId(userId);
 
-    Database.getInstance().addUser(user);
+      Database.getInstance().addUser(user);
 
-    // Send the user to Shared
-    boolean sharedRes = SharedServiceClient.getInstance().addUser(partnerId, productId, userId);
-    if (!sharedRes) {
-      HttpException e = new HttpException("Adding user to shared server failed");
-      Logging.errorLog(e);
-      //throw e;
+      // Send the user to Shared
+      boolean sharedRes = SharedServiceClient.getInstance().addUser(partnerId, productId, userId);
+      if (!sharedRes) {
+        System.out.println("Adding user to shared server failed");
+        HttpException e = new HttpException("Adding user to shared server failed");
+        Logging.errorLog(e);
+        //throw e;
+      }
+      return "";
+    }catch (Exception e) {
+      e.printStackTrace();
+      throw halt(500);
     }
-    /*
-     * } catch (Exception e) { e.printStackTrace(); throw e; }
-     */
-    return "";
   }
 }

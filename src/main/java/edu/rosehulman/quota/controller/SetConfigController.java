@@ -21,19 +21,23 @@ public class SetConfigController implements Route {
     // TODO: All of the database calls assume this is the first time the config has been uploaded
 
     JsonObject partnerJsonObject = new JsonParser().parse(body).getAsJsonObject();
+    System.out.println("partner json object: "+partnerJsonObject.toString());
+
     String partnerId = partnerJsonObject.get("partnerId").getAsString();
-    String apiKey = partnerJsonObject.get("apiKey").getAsString();
+    //String apiKey = partnerJsonObject.get("apiKey").getAsString();
 
-    Partner partner = new Partner();
-    partner.setPartnerId(partnerId);
-    partner.setApiKey(apiKey);
+    //Partner partner = new Partner();
+    //partner.setPartnerId(partnerId);
+    //partner.setApiKey(apiKey);
 
-    addPartnerToDatabase(partner);
+    //addPartnerToDatabase(partner);
+
+
 
     JsonArray productsJsonArray = partnerJsonObject.getAsJsonArray("products");
     productsJsonArray.iterator().forEachRemaining(productJsonElement -> {
       JsonObject productJsonObject = productJsonElement.getAsJsonObject();
-      String productId = productJsonObject.get("id").getAsString();
+      String productId = productJsonObject.get("productId").getAsString();
       String productName = productJsonObject.get("name").getAsString();
 
       Product product = new Product();
@@ -46,7 +50,7 @@ public class SetConfigController implements Route {
       JsonArray quotasJsonArray = productJsonObject.getAsJsonArray("quotas");
       quotasJsonArray.iterator().forEachRemaining(quotaJsonElement -> {
         JsonObject quotaJsonObject = quotaJsonElement.getAsJsonObject();
-        String quotaId = quotaJsonObject.get("id").getAsString();
+        String quotaId = quotaJsonObject.get("quotaId").getAsString();
         String quotaName = quotaJsonObject.get("name").getAsString();
         String type = quotaJsonObject.get("type").getAsString();
 
@@ -62,10 +66,9 @@ public class SetConfigController implements Route {
         JsonArray tiersJsonArray = quotaJsonObject.getAsJsonArray("tiers");
         tiersJsonArray.iterator().forEachRemaining(tierJsonElement -> {
           JsonObject tierJsonObject = tierJsonElement.getAsJsonObject();
-          String tierId = tierJsonObject.get("id").getAsString();
+          String tierId = tierJsonObject.get("tierId").getAsString();
           String tierName = tierJsonObject.get("name").getAsString();
           String max = tierJsonObject.get("max").getAsString();
-          String price = tierJsonObject.get("price").getAsString();
           String graceExtra = tierJsonObject.get("graceExtra").getAsString();
 
           Tier tier = new Tier();
@@ -75,7 +78,6 @@ public class SetConfigController implements Route {
           tier.setTierId(tierId);
           tier.setTierName(tierName);
           tier.setMax(max);
-          tier.setPrice(price);
           if (graceExtra != null)
             tier.setGraceExtra(graceExtra);
 

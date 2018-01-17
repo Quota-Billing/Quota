@@ -1,5 +1,7 @@
 package edu.rosehulman.quota.controller;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.Logging;
 import edu.rosehulman.quota.client.BillingClient;
@@ -12,9 +14,6 @@ import spark.Route;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import static spark.Spark.halt;
 

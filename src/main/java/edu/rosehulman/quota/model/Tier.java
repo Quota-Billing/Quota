@@ -24,9 +24,6 @@ public class Tier {
   @DatabaseField(columnName = "max")
   private String max;
 
-  @DatabaseField(columnName = "price")
-  private String price;
-
   @DatabaseField(columnName = "grace_extra")
   private String graceExtra;
 
@@ -76,14 +73,6 @@ public class Tier {
 
   public void setMax(String max) {
     this.max = max;
-  }
-
-  public String getPrice() {
-    return price;
-  }
-
-  public void setPrice(String price) {
-    this.price = price;
   }
 
   public String getGraceExtra() {
