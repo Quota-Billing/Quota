@@ -1,9 +1,14 @@
 package edu.rosehulman.quota.controller;
 
+import java.util.Map;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.rosehulman.quota.Database;
+import edu.rosehulman.quota.Parser;
+import edu.rosehulman.quota.StorageParser;
+import edu.rosehulman.quota.TimeParser;
 import edu.rosehulman.quota.exceptions.DatabaseException;
 import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.Product;
@@ -14,6 +19,13 @@ import spark.Response;
 import spark.Route;
 
 public class SetConfigController implements Route {
+
+  private Map<String, Parser> map;
+
+  public SetConfigController() {
+    map.put("storage", new StorageParser());
+    map.put("time", new TimeParser());
+  }
 
   public Object handle(Request request, Response response) throws Exception {
     String body = request.body();
@@ -67,6 +79,11 @@ public class SetConfigController implements Route {
           String max = tierJsonObject.get("max").getAsString();
           String price = tierJsonObject.get("price").getAsString();
           String graceExtra = tierJsonObject.get("graceExtra").getAsString();
+
+          if (map.containsKey(type)) {
+            max = map.get(type).parse(max);
+            graceExtra = map.get(type).parse(graceExtra);
+          }
 
           Tier tier = new Tier();
           tier.setPartnerId(partnerId);
