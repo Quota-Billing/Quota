@@ -2,7 +2,9 @@ package edu.rosehulman.quota.controller;
 
 import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.Logging;
+import edu.rosehulman.quota.Parser;
 import edu.rosehulman.quota.StorageParser;
+import edu.rosehulman.quota.TimeParser;
 import edu.rosehulman.quota.client.BillingClient;
 import edu.rosehulman.quota.model.Quota;
 import edu.rosehulman.quota.model.Tier;
@@ -13,6 +15,7 @@ import spark.Route;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.google.gson.JsonObject;
@@ -21,6 +24,13 @@ import com.google.gson.JsonParser;
 import static spark.Spark.halt;
 
 public class IncrementQuotaController implements Route {
+
+  private Map<String, Parser> map;
+
+  public IncrementQuotaController() {
+    map.put("storage", new StorageParser());
+    map.put("time", new TimeParser());
+  }
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
@@ -69,8 +79,8 @@ public class IncrementQuotaController implements Route {
       String valueToAdd = partnerJsonObject.get("count").getAsString();
 
       Quota quota = Database.getInstance().getQuota(partnerId, productId, quotaId).get();
-      if (quota.getType().equals("storage")) {
-        valueToAdd = StorageParser.parse(valueToAdd);
+      if (map.containsKey(quota.getType())) {
+        valueToAdd = map.get(quota.getType()).parse(valueToAdd);
       }
       incrementedValue = value.add(new BigInteger(valueToAdd));
     }
