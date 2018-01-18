@@ -17,6 +17,7 @@ import spark.Response;
 import spark.Route;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,6 +29,7 @@ public class IncrementQuotaController implements Route {
   private Map<String, Parser> map;
 
   public IncrementQuotaController() {
+    map = new HashMap<String, Parser>();
     map.put("storage", new StorageParser());
     map.put("time", new TimeParser());
   }
