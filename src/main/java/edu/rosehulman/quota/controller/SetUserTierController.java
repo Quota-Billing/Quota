@@ -1,18 +1,17 @@
 package edu.rosehulman.quota.controller;
 
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Optional;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.model.Tier;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Optional;
 
 public class SetUserTierController implements Route {
 
@@ -31,10 +30,10 @@ public class SetUserTierController implements Route {
       JsonObject partnerJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
       keepCurrentValue = partnerJsonObject.get("rollover").getAsBoolean();
     }
-    
+
     BigInteger currentValue = BigInteger.ZERO;
     List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
-    for (Tier tier: tiers) {
+    for (Tier tier : tiers) {
       Optional<UserTier> userTier = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId, tier.getTierId());
       if (userTier.isPresent()) {
         if (keepCurrentValue) {

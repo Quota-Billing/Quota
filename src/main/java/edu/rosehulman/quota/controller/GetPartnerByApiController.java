@@ -1,12 +1,12 @@
 package edu.rosehulman.quota.controller;
 
-import java.util.Optional;
-
 import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.model.Partner;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+
+import java.util.Optional;
 
 import static spark.Spark.halt;
 
@@ -23,5 +23,4 @@ public class GetPartnerByApiController implements Route {
 
     return optPartner.get().getPartnerId();
   }
-
 }

@@ -17,7 +17,7 @@ public class User {
 
   @DatabaseField(columnName = "frozen")
   private boolean frozen;
-  
+
   public boolean isFrozen() {
     return frozen;
   }

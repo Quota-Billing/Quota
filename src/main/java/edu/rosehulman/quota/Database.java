@@ -181,5 +181,4 @@ public class Database {
   private Dao<UserTier, String> getUserTierDao() throws Exception {
     return DaoManager.createDao(connectionSource, UserTier.class);
   }
-
 }
