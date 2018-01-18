@@ -45,6 +45,8 @@ public class Application {
     // Consume a setUserTier call from SDK/partner
     put("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId/tier/:tierId", new SetUserTierController());
 
+    post("/partner", new AddPartnerController());
+
     // try {
     // Partner partner = new Partner();
     // partner.setApiKey("apiKey");

@@ -1,10 +1,10 @@
 package edu.rosehulman.quota;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class Logging {
   private static final Logger errorLog = LogManager.getLogger("errorLog");
@@ -19,5 +19,4 @@ public class Logging {
     String sStackTrace = sw.toString(); // stack trace as a string
     errorLog.error(sStackTrace);
   }
-
 }

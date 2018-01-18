@@ -1,10 +1,6 @@
 package edu.rosehulman.quota.controller;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.google.gson.JsonObject;
-
 import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.model.Tier;
 import edu.rosehulman.quota.model.UserTier;
@@ -12,9 +8,13 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import java.util.List;
+import java.util.Optional;
+
 import static spark.Spark.halt;
 
 public class GetQuotaController implements Route {
+
   @Override
   public Object handle(Request request, Response response) throws Exception {
     String apiKey = request.params(":apiKey");

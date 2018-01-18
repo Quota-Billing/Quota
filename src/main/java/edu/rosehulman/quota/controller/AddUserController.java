@@ -11,6 +11,8 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import static spark.Spark.halt;
+
 public class AddUserController implements Route {
 
   @Override
@@ -35,11 +37,8 @@ public class AddUserController implements Route {
     if (!sharedRes) {
       HttpException e = new HttpException("Adding user to shared server failed");
       Logging.errorLog(e);
-      //throw e;
+      throw halt(500);
     }
-    /*
-     * } catch (Exception e) { e.printStackTrace(); throw e; }
-     */
     return "";
   }
 }

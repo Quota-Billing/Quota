@@ -2,7 +2,6 @@ package edu.rosehulman.quota.client;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-
 import edu.rosehulman.quota.SystemConfig;
 
 public class BillingClient {
@@ -27,7 +26,5 @@ public class BillingClient {
     } catch (Exception e) {
       return null;
     }
-
   }
-
 }
