@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.xml.crypto.Data;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -49,12 +47,12 @@ public class IncrementQuotaController implements Route {
       throw halt(404);
     }
     User user = userOptional.get();
-    
+
     // if user is frozen, cannot increment at all
-    if(user.isFrozen()) {
+    if (user.isFrozen()) {
       throw halt(403);
     }
-    
+
     List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
     if (tiers.isEmpty()) {
       throw halt(404);
