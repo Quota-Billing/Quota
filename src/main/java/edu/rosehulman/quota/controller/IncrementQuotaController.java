@@ -8,6 +8,7 @@ import edu.rosehulman.quota.TimeParser;
 import edu.rosehulman.quota.client.BillingClient;
 import edu.rosehulman.quota.model.Quota;
 import edu.rosehulman.quota.model.Tier;
+import edu.rosehulman.quota.model.User;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
 import spark.Response;
@@ -40,6 +41,17 @@ public class IncrementQuotaController implements Route {
     String quotaId = request.params(":quotaId");
 
     String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
+
+    Optional<User> userOptional = Database.getInstance().getUser(partnerId, productId, userId);
+    if (!userOptional.isPresent()) {
+      throw halt(404);
+    }
+    User user = userOptional.get();
+
+    // if user is frozen, cannot increment at all
+    if (user.isFrozen()) {
+      throw halt(403);
+    }
 
     List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
     if (tiers.isEmpty()) {
