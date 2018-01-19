@@ -1,5 +1,6 @@
 package edu.rosehulman.quota.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.JsonArray;
@@ -22,6 +23,7 @@ public class SetConfigController implements Route {
   private Map<String, Parser> map;
 
   public SetConfigController() {
+    map = new HashMap<String, Parser>();
     map.put("storage", new StorageParser());
     map.put("time", new TimeParser());
   }
