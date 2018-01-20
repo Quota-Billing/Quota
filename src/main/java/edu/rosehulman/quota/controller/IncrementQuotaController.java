@@ -18,7 +18,6 @@ import spark.Route;
 
 import java.math.BigInteger;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -47,29 +46,29 @@ public class IncrementQuotaController implements Route {
     if (!userOptional.isPresent()) {
       throw halt(404);
     }
-    User user = userOptional.get();
 
+    User user = userOptional.get();
     // if user is frozen, cannot increment at all
     if (user.isFrozen()) {
       throw halt(403);
     }
 
-    List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
-    if (tiers.isEmpty()) {
-      throw halt(404);
-    }
-    Tier firstTier = tiers.get(0); // TODO: For now we just get the first tier
-
-    Optional<UserTier> userTierOptional = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId, firstTier.getTierId());
+    Optional<UserTier> userTierOptional = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId);
     if (!userTierOptional.isPresent()) {
       throw halt(404);
     }
     UserTier userTier = userTierOptional.get();
 
+    Optional<Tier> tierOptional = Database.getInstance().getTier(partnerId, productId, quotaId, userTier.getTierId());
+    if (!tierOptional.isPresent()) {
+      throw halt(404);
+    }
+    Tier tier = tierOptional.get();
+
     // TODO: For now we use BigInteger as the data type for the value and max
     BigInteger value = new BigInteger(userTier.getValue());
-    BigInteger max = new BigInteger(firstTier.getMax());
-    BigInteger graceExtra = new BigInteger(firstTier.getGraceExtra());
+    BigInteger max = new BigInteger(tier.getMax());
+    BigInteger graceExtra = new BigInteger(tier.getGraceExtra());
     BigInteger maxPlusGraceExtra = max.add(graceExtra);
 
     // See if we are at or above the quota already

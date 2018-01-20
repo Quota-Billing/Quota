@@ -16,6 +16,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import edu.rosehulman.quota.controller.GetQuotaController;
 import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.Quota;
+import edu.rosehulman.quota.model.Tier;
+import edu.rosehulman.quota.model.UserTier;
 import spark.HaltException;
 import spark.Request;
 import spark.Response;
@@ -32,12 +34,17 @@ public class GetQuotaControllerTest {
 
     Quota quota = mock(Quota.class);
     Partner partner = mock(Partner.class);
+    UserTier userTier = mock(UserTier.class);
+    Tier tier = mock(Tier.class);
 
     when(database.getPartnerByApi("apiKey")).thenReturn(Optional.of(partner));
     when(partner.getPartnerId()).thenReturn("partner_id");
+    when(userTier.getTierId()).thenReturn("tier_id");
 
     when(database.getQuota("partner_id", "product_id", "quota_id")).thenReturn(Optional.of(quota));
     when(database.getQuota("partner_id", "product_id", "bad_quota_id")).thenReturn(Optional.empty());
+    when(database.getUserTier("partner_id", "product_id", "user_id", "quota_id")).thenReturn(Optional.of(userTier));
+    when(database.getTier("partner_id", "product_id", "quota_id", "tier_id")).thenReturn(Optional.of(tier));
 
     Request request = mock(Request.class);
     when(request.params(":apiKey")).thenReturn("apiKey");
