@@ -35,6 +35,7 @@ public class GetQuotaController implements Route {
       Optional<UserTier> temp = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId, tier.getTierId());
       if (temp.isPresent()) {
         UserTier userTier = temp.get();
+        json.addProperty("tierId", tier.getTierId());
         json.addProperty("max", tier.getMax());
         json.addProperty("value", userTier.getValue());
       }

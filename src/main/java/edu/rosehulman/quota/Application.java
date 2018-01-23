@@ -28,10 +28,8 @@ public class Application {
     // Consume DeleteUser call
     delete("partnerApi/:apiKey/product/:productId/user/:userId", new DeleteUserController());
 
-    // TODO change this to accept billing requests
     // Billing calls this endpoint
-    // get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new
-    // GetQuotaController());
+    get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
 
     // increment quota
     post("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new IncrementQuotaController());
