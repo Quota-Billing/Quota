@@ -29,7 +29,7 @@ public class Application {
     delete("partnerApi/:apiKey/product/:productId/user/:userId", new DeleteUserController());
 
     // Billing calls this endpoint
-    get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
+    get("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
 
     // increment quota
     post("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new IncrementQuotaController());
