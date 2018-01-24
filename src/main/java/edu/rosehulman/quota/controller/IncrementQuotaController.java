@@ -116,6 +116,10 @@ public class IncrementQuotaController implements Route {
       throw halt(500);
     }
 
+    if (incrementedValue.compareTo(max) > 0) {
+      return "{\"isGrace\":true}";
+    }
+
     return "";
   }
 }
