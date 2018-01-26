@@ -31,20 +31,20 @@ public class GetQuotaController implements Route {
 
     List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
 
-    JsonArray arr = new JsonArray();
+    JsonObject json = new JsonObject();
     
+    // loop through tiers to find tier user uses
     for (Tier tier : tiers) {
       Optional<UserTier> temp = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId, tier.getTierId());
       if (temp.isPresent()) {
-        JsonObject json = new JsonObject();
         UserTier userTier = temp.get();
         json.addProperty("tierId", tier.getTierId());
         json.addProperty("max", tier.getMax());
         json.addProperty("value", userTier.getValue());
-        arr.add(json);
+        break; // once found, done
       }
     }
 
-    return arr.toString();
+    return json.toString();
   }
 }
