@@ -11,7 +11,7 @@ import spark.Route;
 
 import static spark.Spark.halt;
 
-public class GetQuotaController implements Route {
+public class GetQuotaBillingController implements Route {
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
