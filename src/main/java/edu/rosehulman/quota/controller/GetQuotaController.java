@@ -1,5 +1,6 @@
 package edu.rosehulman.quota.controller;
 
+import java.util.Optional;
 import com.google.gson.JsonObject;
 import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.model.Tier;
@@ -7,9 +8,6 @@ import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-
-import java.util.List;
-import java.util.Optional;
 
 import static spark.Spark.halt;
 
@@ -28,17 +26,21 @@ public class GetQuotaController implements Route {
       throw halt(404);
     }
 
-    List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
-
     JsonObject json = new JsonObject();
-    for (Tier tier : tiers) {
-      Optional<UserTier> temp = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId, tier.getTierId());
-      if (temp.isPresent()) {
-        UserTier userTier = temp.get();
-        json.addProperty("max", tier.getMax());
-        json.addProperty("value", userTier.getValue());
-      }
+    Optional<UserTier> userTierOptional = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId);
+    if (!userTierOptional.isPresent()) {
+      throw halt(404);
     }
+    UserTier userTier = userTierOptional.get();
+
+    Optional<Tier> tierOptional = Database.getInstance().getTier(partnerId, productId, quotaId, userTier.getTierId());
+    if (!tierOptional.isPresent()) {
+      throw halt(404);
+    }
+    Tier tier = tierOptional.get();
+
+    json.addProperty("max", tier.getMax());
+    json.addProperty("value", userTier.getValue());
 
     return json.toString();
   }

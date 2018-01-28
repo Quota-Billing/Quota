@@ -67,12 +67,6 @@ public class Application {
     // quota.setType("numerical");
     // Database.getInstance().addQuota(quota);
     //
-    // User user = new User();
-    // user.setPartnerId("partnerId");
-    // user.setProductId("productId");
-    // user.setUserId("userId");
-    // Database.getInstance().addUser(user);
-    //
     // Tier tier = new Tier();
     // tier.setPartnerId("partnerId");
     // tier.setProductId("productId");
@@ -80,8 +74,24 @@ public class Application {
     // tier.setTierId("tierId");
     // tier.setTierName("tierName");
     // tier.setMax("5");
-    // tier.setPrice("23.00");
+    // tier.setGraceExtra("1");
     // Database.getInstance().addTier(tier);
+    //
+    // Tier tier2 = new Tier();
+    // tier2.setPartnerId("partnerId");
+    // tier2.setProductId("productId");
+    // tier2.setQuotaId("quotaId");
+    // tier2.setTierId("tierId2");
+    // tier2.setTierName("tierName2");
+    // tier2.setMax("10");
+    // tier2.setGraceExtra("2");
+    // Database.getInstance().addTier(tier2);
+    //
+    // User user = new User();
+    // user.setPartnerId("partnerId");
+    // user.setProductId("productId");
+    // user.setUserId("userId");
+    // Database.getInstance().addUser(user);
     //
     // // UserTier automatically populated
     // } catch (Exception e) {
