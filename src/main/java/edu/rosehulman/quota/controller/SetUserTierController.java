@@ -1,10 +1,14 @@
 package edu.rosehulman.quota.controller;
 
+import static spark.Spark.halt;
+
 import java.math.BigInteger;
 import java.util.Optional;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.rosehulman.quota.Database;
+import edu.rosehulman.quota.Logging;
+import edu.rosehulman.quota.client.BillingClient;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
 import spark.Response;
@@ -45,6 +49,11 @@ public class SetUserTierController implements Route {
     newUserTier.setUserId(userId);
     newUserTier.setValue(currentValue.toString());
     Database.getInstance().addUserTier(newUserTier);
+
+    if (!BillingClient.getInstance().setUserTier(partnerId, productId, quotaId, tierId, userId)) {
+      Logging.errorLog("There was an error setting the UserTier in the billing server");
+      throw halt(500);
+    }
 
     return "";
   }
