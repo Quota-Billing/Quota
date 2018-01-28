@@ -56,10 +56,6 @@ public class Database {
     return quotas.isEmpty() ? Optional.empty() : Optional.ofNullable(quotas.get(0));
   }
 
-  public List<Quota> getAllQuotasForProduct(String partnerId, String productId) throws Exception {
-    return getQuotaDao().query(getQuotaDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).prepare());
-  }
-
   public void addQuota(Quota quota) throws Exception {
     getQuotaDao().create(quota);
   }
@@ -79,10 +75,21 @@ public class Database {
 
   public boolean deleteTier(String partnerId, String productId, String quotaId, String tierId, String newTierId) throws Exception {
     String newTier = newTierId;
+    List<Tier> tiers = getQuotaTiers(partnerId, productId, quotaId);
     if (newTierId.isEmpty()) {
       // If a new tier isn't specified we use the first in the tier list
-      List<Tier> tiers = getQuotaTiers(partnerId, productId, quotaId);
       newTier = tiers.get(0).getTierId();
+    } else {
+      boolean ret = true;
+      for (Tier tier: tiers) {
+        if (tier.getTierId().equals(newTierId)) {
+          ret = false;
+        }
+      }
+      if (ret) {
+        // The new tier doesn't exist in db
+        return false;
+      }
     }
     changeUsersToNewTier(partnerId, productId, quotaId, tierId, newTier);
     DeleteBuilder<Tier, String> builder = getTierDao().deleteBuilder();
@@ -109,28 +116,8 @@ public class Database {
     return users.isEmpty() ? Optional.empty() : Optional.ofNullable(users.get(0));
   }
 
-  public List<User> getAllUsersForProduct(String partnerId, String productId) throws Exception {
-    return getUserDao().query(getUserDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).prepare());
-  }
-
   public void addUser(User user) throws Exception {
     getUserDao().create(user);
-    populateUserTiers(user);
-  }
-
-  private void populateUserTiers(User user) throws Exception {
-    List<Quota> quotas = getAllQuotasForProduct(user.getPartnerId(), user.getProductId());
-    for (Quota quota : quotas) {
-      Tier tier = getQuotaTiers(quota.getPartnerId(), quota.getProductId(), quota.getQuotaId()).get(0); // We just set it to first tier
-      UserTier userTier = new UserTier();
-      userTier.setPartnerId(user.getPartnerId());
-      userTier.setProductId(user.getProductId());
-      userTier.setQuotaId(quota.getQuotaId());
-      userTier.setUserId(user.getUserId());
-      userTier.setTierId(tier.getTierId());
-      userTier.setValue("0");
-      addUserTier(userTier);
-    }
   }
 
   public boolean deleteUser(String partnerId, String productId, String userId) throws Exception {
