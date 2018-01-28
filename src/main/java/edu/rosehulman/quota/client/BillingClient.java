@@ -27,4 +27,13 @@ public class BillingClient {
       return null;
     }
   }
+
+  public boolean setUserTier(String partnerId, String productId, String quotaId, String tierId, String userId) {
+    try {
+      HttpResponse<String> response = Unirest.post(SystemConfig.getInstance().getBillingServerPath() + "/partner/{partnerId}/product/{productId}/quota/{quotaId}/tier/{tierId}/user/{userId}").routeParam("partnerId", partnerId).routeParam("productId", productId).routeParam("userId", userId).routeParam("quotaId", quotaId).routeParam("tierId", tierId).asString();
+      return response.getStatus() == 200;
+    } catch (Exception e) {
+      return false;
+    }
+  }
 }
