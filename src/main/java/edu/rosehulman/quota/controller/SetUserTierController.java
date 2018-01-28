@@ -1,17 +1,18 @@
 package edu.rosehulman.quota.controller;
 
+import static spark.Spark.halt;
+
+import java.math.BigInteger;
+import java.util.Optional;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.rosehulman.quota.Database;
-import edu.rosehulman.quota.model.Tier;
+import edu.rosehulman.quota.Logging;
+import edu.rosehulman.quota.client.BillingClient;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Optional;
 
 public class SetUserTierController implements Route {
 
@@ -32,15 +33,12 @@ public class SetUserTierController implements Route {
     }
 
     BigInteger currentValue = BigInteger.ZERO;
-    List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
-    for (Tier tier : tiers) {
-      Optional<UserTier> userTier = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId, tier.getTierId());
-      if (userTier.isPresent()) {
-        if (keepCurrentValue) {
-          currentValue = new BigInteger(userTier.get().getValue());
-        }
-        Database.getInstance().deleteUserTier(partnerId, productId, userId, quotaId, tier.getTierId());
+    Optional<UserTier> userTier = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId);
+    if (userTier.isPresent()) {
+      if (keepCurrentValue) {
+        currentValue = new BigInteger(userTier.get().getValue());
       }
+      Database.getInstance().deleteUserTier(partnerId, productId, userId, quotaId);
     }
 
     UserTier newUserTier = new UserTier();
@@ -51,6 +49,11 @@ public class SetUserTierController implements Route {
     newUserTier.setUserId(userId);
     newUserTier.setValue(currentValue.toString());
     Database.getInstance().addUserTier(newUserTier);
+
+    if (!BillingClient.getInstance().setUserTier(partnerId, productId, quotaId, tierId, userId)) {
+      Logging.errorLog("There was an error setting the UserTier in the billing server");
+      throw halt(500);
+    }
 
     return "";
   }
