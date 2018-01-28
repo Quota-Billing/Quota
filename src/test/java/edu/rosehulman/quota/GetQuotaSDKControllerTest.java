@@ -37,9 +37,9 @@ public class GetQuotaSDKControllerTest {
     UserTier userTier = mock(UserTier.class);
     Tier tier = mock(Tier.class);
 
-//    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.of(partner));
-//    when(partner.getPartnerId()).thenReturn("partner_id");
-//    when(userTier.getTierId()).thenReturn("tier_id");
+    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.of(partner));
+    when(partner.getPartnerId()).thenReturn("partner_id");
+    when(userTier.getTierId()).thenReturn("tier_id");
 
     when(database.getQuota("partner_id", "product_id", "quota_id")).thenReturn(Optional.of(quota));
     when(database.getQuota("partner_id", "product_id", "bad_quota_id")).thenReturn(Optional.empty());
