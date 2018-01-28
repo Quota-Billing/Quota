@@ -55,7 +55,7 @@ public class IncrementQuotaController implements Route {
 
     Optional<UserTier> userTierOptional = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId);
     if (!userTierOptional.isPresent()) {
-      throw halt(404);
+      throw halt(403, "{\"tierNotSet\":true}");
     }
     UserTier userTier = userTierOptional.get();
 

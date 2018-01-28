@@ -73,30 +73,13 @@ public class Database {
     getTierDao().create(tier);
   }
 
-  public boolean deleteTier(String partnerId, String productId, String quotaId, String tierId, String newTierId) throws Exception {
-    String newTier = newTierId;
-    List<Tier> tiers = getQuotaTiers(partnerId, productId, quotaId);
-    if (newTierId.isEmpty()) {
-      // If a new tier isn't specified we use the first in the tier list
-      newTier = tiers.get(0).getTierId();
-    } else {
-      boolean ret = true;
-      for (Tier tier: tiers) {
-        if (tier.getTierId().equals(newTierId)) {
-          ret = false;
-        }
-      }
-      if (ret) {
-        // The new tier doesn't exist in db
-        return false;
-      }
-    }
-    changeUsersToNewTier(partnerId, productId, quotaId, tierId, newTier);
+  public boolean deleteTier(String partnerId, String productId, String quotaId, String tierId) throws Exception {
     DeleteBuilder<Tier, String> builder = getTierDao().deleteBuilder();
     builder.where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("quota_id", quotaId).and().eq("tier_id", tierId);
     return builder.delete() > 0;
   }
-  
+
+  // TODO: This is left over from Josh's feature
   public void changeUsersToNewTier(String partnerId, String productId, String quotaId, String prevTierId, String newTierId) throws Exception {
     List<UserTier> userTiers = getUserTierDao().query(getUserTierDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("quota_id", quotaId).and().eq("tier_id", prevTierId).prepare());
     for (UserTier ut: userTiers) {
