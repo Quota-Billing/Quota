@@ -1,0 +1,5 @@
+{
+  "sharedServerPath":"http://localhost:8084",
+  "databaseUrl":"jdbc:postgresql://localhost:5432/quota?user=quota&password=pass",
+  "billingServerPath":"http://srproj-18.csse.rose-hulman.edu:8085"
+}

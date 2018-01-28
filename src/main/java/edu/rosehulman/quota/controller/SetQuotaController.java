@@ -34,7 +34,7 @@ public class SetQuotaController implements Route {
     if (!request.body().isEmpty()) {
       JsonObject partnerJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
       resetValue = (new BigInteger(partnerJsonObject.get("count").getAsString()));
-    }
+    } 
 
     // Save the new value to the database
     userTier.setValue(resetValue.toString());
