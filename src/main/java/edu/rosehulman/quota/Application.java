@@ -20,7 +20,7 @@ public class Application {
     get("partnerApi/:apiKey/product/:productId/user/:userId", new GetUserController());
 
     // Consume a GetQuota call from SDK/partner
-    get("partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
+    get("partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
 
     // Consume a SetConfig call
     post("setConfig", new SetConfigController());

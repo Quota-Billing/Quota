@@ -1,6 +1,5 @@
 package edu.rosehulman.quota.controller;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.model.Tier;
@@ -18,12 +17,10 @@ public class GetQuotaController implements Route {
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
-    String apiKey = request.params(":apiKey");
+    String partnerId = request.params(":partnerId");
     String productId = request.params(":productId");
     String userId = request.params(":userId");
     String quotaId = request.params(":quotaId");
-
-    String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
 
     if (!Database.getInstance().getQuota(partnerId, productId, quotaId).isPresent()) {
       throw halt(404);
@@ -32,7 +29,7 @@ public class GetQuotaController implements Route {
     List<Tier> tiers = Database.getInstance().getQuotaTiers(partnerId, productId, quotaId);
 
     JsonObject json = new JsonObject();
-    
+
     // loop through tiers to find tier user uses
     for (Tier tier : tiers) {
       Optional<UserTier> temp = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId, tier.getTierId());
