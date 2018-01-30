@@ -26,7 +26,7 @@ public class Application {
     delete("partnerApi/:apiKey/product/:productId/user/:userId", new DeleteUserController());
 
     // Consume a GetQuota call from SDK/partner
-    get("partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaSDKController());
+    get("partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new GetQuotaSDKController());
 
     // Billing calls this endpoint
     get("partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaBillingController());
