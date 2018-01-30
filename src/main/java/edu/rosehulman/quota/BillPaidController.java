@@ -5,6 +5,7 @@ import static spark.Spark.halt;
 import java.math.BigInteger;
 import java.util.Optional;
 
+import edu.rosehulman.quota.client.BillingClient;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
 import spark.Response;
@@ -33,6 +34,12 @@ public class BillPaidController implements Route {
     boolean updated = Database.getInstance().updateUserTier(userTier);
 
     if (!updated) {
+      throw halt(500);
+    }
+
+    // forward to billing
+    if (!BillingClient.getInstance().billPaid(partnerId, productId, userId, quotaId)) {
+      Logging.errorLog("There was an error forwarding bill paid to the billing server");
       throw halt(500);
     }
 
