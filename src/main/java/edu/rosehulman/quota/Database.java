@@ -47,6 +47,10 @@ public class Database {
     return products.isEmpty() ? Optional.empty() : Optional.ofNullable(products.get(0));
   }
 
+  public List<Product> getProducts(String partnerId) throws Exception {
+    return getProductDao().query(getProductDao().queryBuilder().where().eq("partner_id", partnerId).prepare());
+  }
+
   public void addProduct(Product product) throws Exception {
     getProductDao().create(product);
   }
@@ -82,7 +86,7 @@ public class Database {
   // TODO: This is left over from Josh's feature
   public void changeUsersToNewTier(String partnerId, String productId, String quotaId, String prevTierId, String newTierId) throws Exception {
     List<UserTier> userTiers = getUserTierDao().query(getUserTierDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("quota_id", quotaId).and().eq("tier_id", prevTierId).prepare());
-    for (UserTier ut: userTiers) {
+    for (UserTier ut : userTiers) {
       changeUserTier(ut, newTierId);
     }
   }

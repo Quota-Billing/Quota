@@ -1,6 +1,7 @@
 package edu.rosehulman.quota.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.JsonArray;
@@ -37,6 +38,8 @@ public class SetConfigController implements Route {
 
     String partnerId = partnerJsonObject.get("partnerId").getAsString();
 
+    List<Product> dbProducts = Database.getInstance().getProducts(partnerId);
+    
     JsonArray productsJsonArray = partnerJsonObject.getAsJsonArray("products");
     productsJsonArray.iterator().forEachRemaining(productJsonElement -> {
       JsonObject productJsonObject = productJsonElement.getAsJsonObject();
