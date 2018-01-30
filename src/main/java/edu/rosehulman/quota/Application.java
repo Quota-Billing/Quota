@@ -19,19 +19,17 @@ public class Application {
     // Consume a GetUser call from SDK/partner
     get("partnerApi/:apiKey/product/:productId/user/:userId", new GetUserController());
 
-    // Consume a GetQuota call from SDK/partner
-    get("partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
-
     // Consume a SetConfig call
     post("setConfig", new SetConfigController());
 
     // Consume DeleteUser call
     delete("partnerApi/:apiKey/product/:productId/user/:userId", new DeleteUserController());
 
-    // TODO change this to accept billing requests
+    // Consume a GetQuota call from SDK/partner
+    get("partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new GetQuotaSDKController());
+
     // Billing calls this endpoint
-    // get("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new
-    // GetQuotaController());
+    get("partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new GetQuotaBillingController());
 
     // increment quota
     post("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new IncrementQuotaController());
