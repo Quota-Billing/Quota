@@ -39,7 +39,7 @@ public class BillingClient {
 
   public boolean billPaid(String partnerId, String productId, String userId, String quotaId) {
     try {
-      HttpResponse<String> response = Unirest.post(SystemConfig.getInstance().getBillingServerPath() + "/partnerApi/:apiKey/product/:productId/userPaid/:userId/quota/:quotaId").routeParam("partnerId", partnerId).routeParam("productId", productId).routeParam("userId", userId).routeParam("quotaId", quotaId).asString();
+      HttpResponse<String> response = Unirest.post(SystemConfig.getInstance().getBillingServerPath() + "/partner/:partnerId/product/:productId/userPaid/:userId/quota/:quotaId").routeParam("partnerId", partnerId).routeParam("productId", productId).routeParam("userId", userId).routeParam("quotaId", quotaId).asString();
       return response.getStatus() == 200;
     } catch (Exception e) {
       e.printStackTrace();

@@ -1,10 +1,12 @@
-package edu.rosehulman.quota;
+package edu.rosehulman.quota.controller;
 
 import static spark.Spark.halt;
 
 import java.math.BigInteger;
 import java.util.Optional;
 
+import edu.rosehulman.quota.Database;
+import edu.rosehulman.quota.Logging;
 import edu.rosehulman.quota.client.BillingClient;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
@@ -42,8 +44,6 @@ public class BillPaidController implements Route {
       Logging.errorLog("There was an error forwarding bill paid to the billing server");
       throw halt(500);
     }
-
     return "";
   }
-
 }

@@ -51,8 +51,6 @@ public class Application {
     // consume add partner call from Shared
     post("/partner", new AddPartnerController());
 
-    // consume a
-
     // try {
     // Partner partner = new Partner();
     // partner.setApiKey("apiKey");
