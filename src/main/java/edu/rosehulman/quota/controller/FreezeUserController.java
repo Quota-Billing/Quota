@@ -16,11 +16,9 @@ public class FreezeUserController implements Route {
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
-    String apiKey = request.params(":apiKey");
+    String partnerId = request.params(":partnerId");
     String productId = request.params(":productId");
     String userId = request.params(":userId");
-
-    String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
 
     Optional<User> userOptional = Database.getInstance().getUser(partnerId, productId, userId);
 

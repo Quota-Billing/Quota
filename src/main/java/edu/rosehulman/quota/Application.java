@@ -14,7 +14,7 @@ public class Application {
     post("partnerApi/:apiKey/product/:productId/user", new AddUserController());
 
     // Consume a (Un)FreezeUser call from Billing
-    post("partnerApi/:apiKey/product/:productId/user/:userId", new FreezeUserController());
+    post("partner/:partnerId/product/:productId/user/:userId", new FreezeUserController());
 
     // Consume a GetUser call from SDK/partner
     get("partnerApi/:apiKey/product/:productId/user/:userId", new GetUserController());
@@ -22,7 +22,7 @@ public class Application {
     // Consume a GetQuota call from SDK/partner
     get("partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new GetQuotaController());
 
-    // Consume a SetConfig call
+    // Consume a SetConfig call from shared
     post("setConfig", new SetConfigController());
 
     // Consume DeleteUser call
@@ -39,12 +39,16 @@ public class Application {
     // Consume a GetPartner call from SDK/partner
     get("partnerApi/:apiKey", new GetPartnerByApiController());
 
-    // reset quota call from billing
-    put("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId", new SetQuotaController());
+    // reset quota call from billing *** Not currently used by SDK
+    put("/partner/:partnerId/product/:productId/user/:userId/quota/:quotaId", new SetQuotaController());
+
+    // Reset quota, call from partner and forward to billing; Resets to 0
+    put("/partnerApi/:apiKey/product/:productId/userPaid/:userId/quota/:quotaId", new BillPaidController());
 
     // Consume a setUserTier call from SDK/partner
     put("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId/tier/:tierId", new SetUserTierController());
 
+    // consume add partner call from Shared
     post("/partner", new AddPartnerController());
 
     // try {

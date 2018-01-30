@@ -1,27 +1,28 @@
 package edu.rosehulman.quota.controller;
 
+import static spark.Spark.halt;
+
+import java.math.BigInteger;
+import java.util.Optional;
+
 import edu.rosehulman.quota.Database;
+import edu.rosehulman.quota.Logging;
+import edu.rosehulman.quota.client.BillingClient;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
-import java.math.BigInteger;
-import java.util.Optional;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import static spark.Spark.halt;
-
-public class SetQuotaController implements Route {
+public class BillPaidController implements Route {
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
-    String partnerId = request.params(":partnerId");
+    String apiKey = request.params(":apiKey");
     String productId = request.params(":productId");
     String userId = request.params(":userId");
     String quotaId = request.params(":quotaId");
+
+    String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
 
     Optional<UserTier> userTierOptional = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId);
     if (!userTierOptional.isPresent()) {
@@ -29,10 +30,6 @@ public class SetQuotaController implements Route {
     }
     UserTier userTier = userTierOptional.get();
     BigInteger resetValue = BigInteger.ZERO;
-    if (!request.body().isEmpty()) {
-      JsonObject partnerJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
-      resetValue = (new BigInteger(partnerJsonObject.get("count").getAsString()));
-    }
 
     // Save the new value to the database
     userTier.setValue(resetValue.toString());
@@ -42,6 +39,11 @@ public class SetQuotaController implements Route {
       throw halt(500);
     }
 
+    // forward to billing
+    if (!BillingClient.getInstance().billPaid(partnerId, productId, userId, quotaId)) {
+      Logging.errorLog("There was an error forwarding bill paid to the billing server");
+      throw halt(500);
+    }
     return "";
   }
 }
