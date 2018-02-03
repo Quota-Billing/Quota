@@ -1,9 +1,5 @@
 package edu.rosehulman.quota.controller;
 
-import static spark.Spark.halt;
-
-import java.math.BigInteger;
-import java.util.Optional;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.rosehulman.quota.Database;
@@ -13,6 +9,11 @@ import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+
+import java.math.BigInteger;
+import java.util.Optional;
+
+import static spark.Spark.halt;
 
 public class SetUserTierController implements Route {
 
