@@ -8,6 +8,7 @@ import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import edu.rosehulman.quota.model.*;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,9 +56,26 @@ public class Database {
     getProductDao().create(product);
   }
 
+  public boolean updateProductName(Product product) throws Exception {
+    UpdateBuilder<Product, String> updateBuilder = getProductDao().updateBuilder();
+    updateBuilder.updateColumnValue("product_name", product.getProductName());
+    updateBuilder.where().eq("partner_id", product.getPartnerId()).and().eq("product_id", product.getProductId());
+    return updateBuilder.update() == 1;
+  }
+
+  public boolean deleteProduct(Product product) throws Exception {
+    DeleteBuilder<Product, String> builder = getProductDao().deleteBuilder();
+    builder.where().eq("partner_id", product.getPartnerId()).and().eq("product_id", product.getProductId());
+    return builder.delete() > 0;
+  }
+
   public Optional<Quota> getQuota(String partnerId, String productId, String quotaId) throws Exception {
     List<Quota> quotas = getQuotaDao().query(getQuotaDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).and().eq("quota_id", quotaId).prepare());
     return quotas.isEmpty() ? Optional.empty() : Optional.ofNullable(quotas.get(0));
+  }
+
+  public List<Quota> getQuotas(String partnerId, String productId) throws Exception {
+    return getQuotaDao().query(getQuotaDao().queryBuilder().where().eq("partner_id", partnerId).and().eq("product_id", productId).prepare());
   }
 
   public void addQuota(Quota quota) throws Exception {
