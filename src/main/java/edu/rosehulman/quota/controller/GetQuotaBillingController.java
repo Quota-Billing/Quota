@@ -11,22 +11,21 @@ import spark.Route;
 
 import static spark.Spark.halt;
 
-public class GetQuotaController implements Route {
+public class GetQuotaBillingController implements Route {
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
-    String apiKey = request.params(":apiKey");
+    String partnerId = request.params(":partnerId");
     String productId = request.params(":productId");
     String userId = request.params(":userId");
     String quotaId = request.params(":quotaId");
-
-    String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
 
     if (!Database.getInstance().getQuota(partnerId, productId, quotaId).isPresent()) {
       throw halt(404);
     }
 
     JsonObject json = new JsonObject();
+
     Optional<UserTier> userTierOptional = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId);
     if (!userTierOptional.isPresent()) {
       throw halt(404);
@@ -39,6 +38,7 @@ public class GetQuotaController implements Route {
     }
     Tier tier = tierOptional.get();
 
+    json.addProperty("tierId", tier.getTierId());
     json.addProperty("max", tier.getMax());
     json.addProperty("value", userTier.getValue());
 

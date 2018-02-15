@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import edu.rosehulman.quota.controller.GetQuotaController;
+import edu.rosehulman.quota.controller.GetQuotaSDKController;
 import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.Quota;
 import edu.rosehulman.quota.model.Tier;
@@ -24,7 +24,7 @@ import spark.Response;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Database.class, Request.class, Response.class})
-public class GetQuotaControllerTest {
+public class GetQuotaSDKControllerTest {
 
   @Test
   public void testGetQuota() throws Exception {
@@ -54,7 +54,7 @@ public class GetQuotaControllerTest {
     Response response = mock(Response.class);
     when(response.status()).thenReturn(200);
 
-    GetQuotaController getQuotaController = new GetQuotaController();
+    GetQuotaSDKController getQuotaController = new GetQuotaSDKController();
 
     getQuotaController.handle(request, response);
     assertEquals(200, response.status());

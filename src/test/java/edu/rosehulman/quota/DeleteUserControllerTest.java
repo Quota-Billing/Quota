@@ -13,17 +13,14 @@ import spark.Request;
 import spark.Response;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.util.Optional;
 
-import org.apache.http.HttpException;
-
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Database.class, Request.class, Response.class, SharedServiceClient.class})
+@PrepareForTest({ Database.class, Request.class, Response.class, SharedServiceClient.class })
 public class DeleteUserControllerTest {
 
   @Test
