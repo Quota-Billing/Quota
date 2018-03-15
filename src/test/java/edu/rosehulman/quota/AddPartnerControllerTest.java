@@ -2,8 +2,10 @@ package edu.rosehulman.quota;
 
 import edu.rosehulman.quota.client.SharedServiceClient;
 import edu.rosehulman.quota.controller.AddPartnerController;
+import edu.rosehulman.quota.factories.PartnerFactory;
 import edu.rosehulman.quota.model.Partner;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -24,34 +26,50 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @PrepareForTest({ Database.class, Request.class, Response.class, SharedServiceClient.class })
 public class AddPartnerControllerTest {
 
-  @Test(expected = Exception.class)
-  public void testAddPartnerException() throws Exception {
+  Database database;
+  Request request;
+  Request badRequest;
+  Response response;
+  Partner partner;
+  Partner badPartner;
+  AddPartnerController addPartnerController;
+  JsonObject body;
+  JsonObject badBody;
+  PartnerFactory factory;
+
+  @Before
+  public void setup() throws Exception {
     // setup
     // mocks
     mockStatic(Database.class);
     mockStatic(SharedServiceClient.class);
-    Database database = Mockito.mock(Database.class);
+    database = Mockito.mock(Database.class);
     when(Database.getInstance()).thenReturn(database);
-    Request request = mock(Request.class);
-    Response response = mock(Response.class);
-    Partner partner = mock(Partner.class);
+    request = mock(Request.class);
+    badRequest = mock(Request.class);
+    response = mock(Response.class);
+    partner = mock(Partner.class);
+    badPartner = mock(Partner.class);
+    factory = mock(PartnerFactory.class);
 
     // real objects
-    AddPartnerController addPartnerController = new AddPartnerController();
-    JsonObject body = new JsonObject();
+    addPartnerController = new AddPartnerController(factory);
+    body = new JsonObject();
     body.addProperty("partnerId", "partnerId");
     body.addProperty("apiKey", "apiKey");
+    badBody = new JsonObject();
+    badBody.addProperty("partnerId", "bad_partnerId");
+    badBody.addProperty("apiKey", "bad_apiKey");
+    when(factory.createPartner("partnerId", "apiKey")).thenReturn(partner);
+    when(factory.createPartner("bad_partnerId", "bad_apiKey")).thenReturn(badPartner);
+  }
 
-    // Partner partner = Mockito.mock(Partner.class); ***
-
+  @Test
+  public void testAddPartner() throws Exception {
     // expects
-    when(new Partner()).thenReturn(partner);
-
-    Mockito.doThrow(new Exception()).when(database).addPartner(partner);
+    Mockito.doNothing().when(database).addPartner(partner);
 
     when(request.body()).thenReturn(body.toString());
-    // ***??
-    when(response.status()).thenReturn(500);
 
     // execute
     String actualResponse = (String) addPartnerController.handle(request, response);
@@ -60,4 +78,20 @@ public class AddPartnerControllerTest {
     assertEquals("", actualResponse);
     Mockito.verify(database);
   }
+
+  @Test(expected = Exception.class)
+  public void testAddPartnerException() throws Exception {
+    // expects
+    Mockito.doThrow(new Exception()).when(database).addPartner(badPartner);
+
+    when(badRequest.body()).thenReturn(badBody.toString());
+
+    // execute
+    String actualResponse = (String) addPartnerController.handle(badRequest, response);
+
+    // verify
+    assertEquals("", actualResponse);
+    Mockito.verify(database);
+  }
+
 }

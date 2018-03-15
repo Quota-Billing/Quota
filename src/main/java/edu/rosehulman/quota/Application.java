@@ -1,6 +1,7 @@
 package edu.rosehulman.quota;
 
 import edu.rosehulman.quota.controller.*;
+import edu.rosehulman.quota.factories.PartnerFactory;
 
 import static spark.Spark.*;
 
@@ -43,7 +44,7 @@ public class Application {
     // Consume a setUserTier call from SDK/partner
     put("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId/tier/:tierId", new SetUserTierController());
 
-    post("/partner", new AddPartnerController());
+    post("/partner", new AddPartnerController(new PartnerFactory()));
 
     // try {
     // Partner partner = new Partner();
