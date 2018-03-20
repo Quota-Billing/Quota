@@ -7,7 +7,6 @@ import edu.rosehulman.quota.Logging;
 import edu.rosehulman.quota.client.SharedServiceClient;
 import edu.rosehulman.quota.factories.UserFactory;
 import edu.rosehulman.quota.model.User;
-import org.apache.http.HttpException;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -39,8 +38,7 @@ public class AddUserController implements Route {
     // Send the user to Shared
     boolean sharedRes = SharedServiceClient.getInstance().addUser(partnerId, productId, userId);
     if (!sharedRes) {
-      HttpException e = new HttpException("Adding user to shared server failed");
-      Logging.errorLog(e);
+      Logging.errorLog("Adding user to shared server failed");
       throw halt(500);
     }
     return "";

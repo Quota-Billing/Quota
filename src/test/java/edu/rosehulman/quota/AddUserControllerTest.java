@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.ServiceConfigurationError;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Database.class, Request.class, Response.class, SharedServiceClient.class })
+@PrepareForTest({ Database.class, SharedServiceClient.class })
 public class AddUserControllerTest {
 
   Database database;
