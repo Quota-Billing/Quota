@@ -17,7 +17,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.google.gson.JsonObject;
 
 import edu.rosehulman.quota.controller.GetQuotaBillingController;
-import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.Quota;
 import edu.rosehulman.quota.model.Tier;
 import edu.rosehulman.quota.model.UserTier;
@@ -33,7 +32,6 @@ public class GetQuotaBillingControllerTest {
   Request request;
   Response response;
   GetQuotaBillingController getQuotaBillingController;
-  Partner partner;
   Quota quota;
   UserTier userTier;
   Tier tier;
@@ -45,14 +43,12 @@ public class GetQuotaBillingControllerTest {
     database = mock(Database.class);
     request = mock(Request.class);
     response = mock(Response.class);
-    partner = mock(Partner.class);
     quota = mock(Quota.class);
     userTier = mock(UserTier.class);
     tier = mock(Tier.class);
 
     // Real Objects
     getQuotaBillingController = new GetQuotaBillingController();
-    Optional<Partner> optionPartner = Optional.of(partner);  
     
     // Conditionals
     when(Database.getInstance()).thenReturn(database);
@@ -60,8 +56,6 @@ public class GetQuotaBillingControllerTest {
     when(request.params(":productId")).thenReturn("productId");
     when(request.params(":userId")).thenReturn("userId");
     when(request.params(":quotaId")).thenReturn("quotaId");
-    when(partner.getPartnerId()).thenReturn("partnerId");
-    when(database.getPartnerByApi("apiKey")).thenReturn(optionPartner);
     when(userTier.getTierId()).thenReturn("tierId");
   }
 

@@ -88,9 +88,6 @@ public class IncrementQuotaControllerTest {
     when(tier.getGraceExtra()).thenReturn("5");
 
     when(request.body()).thenReturn("");
-    
-//    Optional<Quota> optionQuota = Optional.of(quota);
-//    when(database.getQuota("partnerId", "productId", "quotaId")).thenReturn(optionQuota);
 
     when(database.updateUserTier(userTier)).thenReturn(true);
 
