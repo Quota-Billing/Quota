@@ -30,20 +30,19 @@ import java.util.ServiceConfigurationError;
 @PrepareForTest({ Database.class, SharedServiceClient.class })
 public class AddUserControllerTest {
 
-  Database database;
-  SharedServiceClient shared;
-  Request request;
-  Response response;
-  AddUserController addUserController;
-  JsonObject body;
-  UserFactory factory;
-  User user;
-  User badUser;
-  User badSharedUser;
-  Partner partner;
+  private Database database;
+  private SharedServiceClient shared;
+  private Request request;
+  private Response response;
+  private AddUserController addUserController;
+  private JsonObject body;
+  private UserFactory factory;
+  private User user;
+  private User badUser;
+  private User badSharedUser;
 
   @Before
-  public void setup() throws Exception {
+  public void setUp() throws Exception {
     // Setup Mocks
     mockStatic(Database.class);
     mockStatic(SharedServiceClient.class);
@@ -55,7 +54,7 @@ public class AddUserControllerTest {
     badUser = mock(User.class);
     badSharedUser = mock(User.class);
     factory = mock(UserFactory.class);
-    partner = mock(Partner.class);
+    Partner partner = mock(Partner.class);
 
     // Real Objects
     body = new JsonObject();

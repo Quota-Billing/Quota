@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.Logging;
 import edu.rosehulman.quota.client.BillingClient;
+import edu.rosehulman.quota.factories.UserTierFactory;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
 import spark.Response;
@@ -16,6 +17,12 @@ import java.util.Optional;
 import static spark.Spark.halt;
 
 public class SetUserTierController implements Route {
+  
+  private UserTierFactory factory;
+  
+  public SetUserTierController(UserTierFactory factory) {
+    this.factory = factory;
+  }
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
@@ -42,13 +49,7 @@ public class SetUserTierController implements Route {
       Database.getInstance().deleteUserTier(partnerId, productId, userId, quotaId);
     }
 
-    UserTier newUserTier = new UserTier();
-    newUserTier.setPartnerId(partnerId);
-    newUserTier.setProductId(productId);
-    newUserTier.setQuotaId(quotaId);
-    newUserTier.setTierId(tierId);
-    newUserTier.setUserId(userId);
-    newUserTier.setValue(currentValue.toString());
+    UserTier newUserTier = factory.createUserTier(partnerId, productId, quotaId, tierId, userId, currentValue.toString());
     Database.getInstance().addUserTier(newUserTier);
 
     if (!BillingClient.getInstance().setUserTier(partnerId, productId, quotaId, tierId, userId)) {

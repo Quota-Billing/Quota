@@ -26,15 +26,14 @@ import java.util.ServiceConfigurationError;
 @PrepareForTest({ Database.class, Request.class, Response.class, SharedServiceClient.class })
 public class DeleteUserControllerTest {
 
-  Database database;
-  SharedServiceClient shared;
-  Request request;
-  Response response;
-  DeleteUserController deleteUserController;
-  Partner partner;
+  private Database database;
+  private SharedServiceClient shared;
+  private Request request;
+  private Response response;
+  private DeleteUserController deleteUserController;
 
   @Before
-  public void setup() throws Exception {
+  public void setUp() throws Exception {
     // Setup Mocks
     mockStatic(Database.class);
     mockStatic(SharedServiceClient.class);
@@ -42,7 +41,7 @@ public class DeleteUserControllerTest {
     shared = mock(SharedServiceClient.class);
     request = mock(Request.class);
     response = mock(Response.class);
-    partner = mock(Partner.class);
+    Partner partner = mock(Partner.class);
 
     // Real Objects
     deleteUserController = new DeleteUserController();

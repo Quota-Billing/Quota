@@ -33,25 +33,24 @@ import spark.Response;
 @PrepareForTest({ Database.class, SharedServiceClient.class, BillingClient.class })
 public class IncrementQuotaControllerTest {
 
-  Database database;
-  Request request;
-  Response response;
-  IncrementQuotaController incrementQuotaController;
-  Partner partner;
-  Quota quota;
-  User user;
-  UserTier userTier;
-  Tier tier;
+  private Database database;
+  private Request request;
+  private Response response;
+  private IncrementQuotaController incrementQuotaController;
+  private Quota quota;
+  private User user;
+  private UserTier userTier;
+  private Tier tier;
 
   @Before
-  public void setup() throws Exception {
+  public void setUp() throws Exception {
     // Setup Mocks
     mockStatic(Database.class);
     mockStatic(SharedServiceClient.class);
     database = mock(Database.class);
     request = mock(Request.class);
     response = mock(Response.class);
-    partner = mock(Partner.class);
+    Partner partner = mock(Partner.class);
     quota = mock(Quota.class);
     user = mock(User.class);
     userTier = mock(UserTier.class);

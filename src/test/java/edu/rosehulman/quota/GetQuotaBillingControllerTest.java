@@ -28,16 +28,16 @@ import spark.Response;
 @PrepareForTest({ Database.class })
 public class GetQuotaBillingControllerTest {
 
-  Database database;
-  Request request;
-  Response response;
-  GetQuotaBillingController getQuotaBillingController;
-  Quota quota;
-  UserTier userTier;
-  Tier tier;
+  private Database database;
+  private Request request;
+  private Response response;
+  private GetQuotaBillingController getQuotaBillingController;
+  private Quota quota;
+  private UserTier userTier;
+  private Tier tier;
 
   @Before
-  public void setup() throws Exception {
+  public void setUp() throws Exception {
     // Setup Mocks
     mockStatic(Database.class);
     database = mock(Database.class);

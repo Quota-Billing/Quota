@@ -27,21 +27,20 @@ import spark.Response;
 @PrepareForTest({ Database.class })
 public class SetQuotaControllerTest {
 
-  Database database;
-  Request request;
-  Response response;
-  SetQuotaController setQuotaController;
-  Partner partner;
-  UserTier userTier;
+  private Database database;
+  private Request request;
+  private Response response;
+  private SetQuotaController setQuotaController;
+  private UserTier userTier;
 
   @Before
-  public void setup() throws Exception {
+  public void setUp() throws Exception {
     // Setup Mocks
     mockStatic(Database.class);
     database = mock(Database.class);
     request = mock(Request.class);
     response = mock(Response.class);
-    partner = mock(Partner.class);
+    Partner partner = mock(Partner.class);
     userTier = mock(UserTier.class);
 
     // Real Objects
