@@ -16,7 +16,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.gson.JsonObject;
 
-import edu.rosehulman.quota.client.SharedServiceClient;
 import edu.rosehulman.quota.controller.GetQuotaBillingController;
 import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.Quota;
@@ -27,7 +26,7 @@ import spark.Request;
 import spark.Response;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Database.class, SharedServiceClient.class })
+@PrepareForTest({ Database.class })
 public class GetQuotaBillingControllerTest {
 
   Database database;
@@ -43,7 +42,6 @@ public class GetQuotaBillingControllerTest {
   public void setup() throws Exception {
     // Setup Mocks
     mockStatic(Database.class);
-    mockStatic(SharedServiceClient.class);
     database = mock(Database.class);
     request = mock(Request.class);
     response = mock(Response.class);
