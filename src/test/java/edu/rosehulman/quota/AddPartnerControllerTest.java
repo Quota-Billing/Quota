@@ -1,6 +1,5 @@
 package edu.rosehulman.quota;
 
-import edu.rosehulman.quota.client.SharedServiceClient;
 import edu.rosehulman.quota.controller.AddPartnerController;
 import edu.rosehulman.quota.factories.PartnerFactory;
 import edu.rosehulman.quota.model.Partner;
@@ -23,7 +22,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Database.class, Request.class, Response.class, SharedServiceClient.class })
+@PrepareForTest({ Database.class, Request.class, Response.class})
 public class AddPartnerControllerTest {
 
   Database database;
@@ -42,9 +41,7 @@ public class AddPartnerControllerTest {
     // setup
     // mocks
     mockStatic(Database.class);
-    mockStatic(SharedServiceClient.class);
     database = Mockito.mock(Database.class);
-    when(Database.getInstance()).thenReturn(database);
     request = mock(Request.class);
     badRequest = mock(Request.class);
     response = mock(Response.class);
@@ -60,6 +57,9 @@ public class AddPartnerControllerTest {
     badBody = new JsonObject();
     badBody.addProperty("partnerId", "bad_partnerId");
     badBody.addProperty("apiKey", "bad_apiKey");
+    
+    // returns
+    when(Database.getInstance()).thenReturn(database);
     when(factory.createPartner("partnerId", "apiKey")).thenReturn(partner);
     when(factory.createPartner("bad_partnerId", "bad_apiKey")).thenReturn(badPartner);
   }
