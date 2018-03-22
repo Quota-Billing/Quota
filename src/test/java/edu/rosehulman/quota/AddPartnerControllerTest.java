@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Database.class, Request.class, Response.class})
+@PrepareForTest({ Database.class, Request.class, Response.class })
 public class AddPartnerControllerTest {
 
   Database database;
@@ -57,7 +57,7 @@ public class AddPartnerControllerTest {
     badBody = new JsonObject();
     badBody.addProperty("partnerId", "bad_partnerId");
     badBody.addProperty("apiKey", "bad_apiKey");
-    
+
     // returns
     when(Database.getInstance()).thenReturn(database);
     when(factory.createPartner("partnerId", "apiKey")).thenReturn(partner);
