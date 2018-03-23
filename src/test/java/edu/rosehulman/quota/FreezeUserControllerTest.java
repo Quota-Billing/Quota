@@ -44,6 +44,7 @@ public class FreezeUserControllerTest {
   Optional<Partner> optPartner;
   Partner partner;
   JsonObject body;
+
   @Before
   public void setup() throws Exception {
     // setup
@@ -57,7 +58,7 @@ public class FreezeUserControllerTest {
     response = mock(Response.class);
     partner = mock(Partner.class);
     optPresentUser = Optional.of(user);
-    optBadUser= Optional.of(badUser);
+    optBadUser = Optional.of(badUser);
     optMissingUser = Optional.empty();
     optPartner = Optional.of(partner);
     // badPartner = mock(Partner.class);
@@ -95,10 +96,6 @@ public class FreezeUserControllerTest {
 
     // expects
     Mockito.doNothing().when(database).addPartner(partner);
-
-    // when(factory.createPartner("partnerId", "apiKey")).thenReturn(partner);
-    // when(factory.createPartner("bad_partnerId",
-    // "bad_apiKey")).thenReturn(badPartner);
   }
 
   @Test
@@ -115,7 +112,7 @@ public class FreezeUserControllerTest {
   }
 
   @Test
-  public void testFreezeUserEmptyBody() throws Exception{
+  public void testFreezeUserEmptyBody() throws Exception {
     // execute
     String actualResponse = (String) freezeUserController.handle(emptyBodyRequest, response);
     // verify
@@ -136,9 +133,9 @@ public class FreezeUserControllerTest {
   public void testFreezeUserUnsuccessfulUpdate() throws Exception {
     // execute
     try {
-      freezeUserController.handle(missingUserRequest, response);
+      freezeUserController.handle(badRequest, response);
     } catch (HaltException e) {
-      assertEquals(404, e.statusCode());
+      assertEquals(500, e.statusCode());
       Mockito.verify(database);
       return;
     }
