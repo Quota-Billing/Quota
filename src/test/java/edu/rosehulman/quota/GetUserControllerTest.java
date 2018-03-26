@@ -130,4 +130,14 @@ public class GetUserControllerTest {
     Mockito.verify(database);
   }
 
+  @Test(expected = Exception.class)
+  public void testGetUserUnsuccessfulGet() throws Exception {
+    Mockito.doThrow(new Exception()).when(database).getPartner("bad_apiKey");
+
+    // execute
+    getUserController.handle(badRequest, response);
+    // verify
+    Mockito.verify(database);
+  }
+
 }
