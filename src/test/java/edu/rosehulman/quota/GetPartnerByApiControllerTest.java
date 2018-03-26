@@ -42,7 +42,7 @@ public class GetPartnerByApiControllerTest {
     // setup
     // mocks
     mockStatic(Database.class);
-    database = Mockito.mock(Database.class);
+    database = mock(Database.class);
     request = mock(Request.class);
     badRequest = mock(Request.class);
     missingPartnerRequest = mock(Request.class);
