@@ -2,6 +2,7 @@ package edu.rosehulman.quota.controller;
 
 import com.google.gson.JsonObject;
 import edu.rosehulman.quota.Database;
+import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.Tier;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
@@ -21,10 +22,15 @@ public class GetQuotaSDKController implements Route {
     String userId = request.params(":userId");
     String quotaId = request.params(":quotaId");
 
-    String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
+    Optional<Partner> optPartner = Database.getInstance().getPartnerByApi(apiKey);
+    if (!optPartner.isPresent()) {
+      throw halt(404, "Missing Partner");
+    }
+
+    String partnerId = optPartner.get().getPartnerId();
 
     if (!Database.getInstance().getQuota(partnerId, productId, quotaId).isPresent()) {
-      throw halt(404);
+      throw halt(404, "Missing Quota");
     }
 
     JsonObject json = new JsonObject();
@@ -39,7 +45,7 @@ public class GetQuotaSDKController implements Route {
 
     Optional<Tier> tierOptional = Database.getInstance().getTier(partnerId, productId, quotaId, userTier.getTierId());
     if (!tierOptional.isPresent()) {
-      throw halt(404);
+      throw halt(404, "Missing Tier");
     }
     Tier tier = tierOptional.get();
 

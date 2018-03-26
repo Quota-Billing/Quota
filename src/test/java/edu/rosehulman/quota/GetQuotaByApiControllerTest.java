@@ -25,17 +25,18 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Database.class, Request.class, Response.class, User.class })
-public class GetPartnerByApiControllerTest {
+public class GetQuotaByApiControllerTest {
 
-  private Database database;
-  private Request request;
-  private Request badRequest;
-  private Request missingPartnerRequest;
-  private Response response;
-  private Optional<Partner> optPresentPartner;
-  private Optional<Partner> optMissingPartner;
-  private Partner partner = new Partner();
-  private GetPartnerByApiController getPartnerByApiController;
+  Database database;
+  Request request;
+  Request badRequest;
+  Request missingPartnerRequest;
+  Response response;
+  Optional<Partner> optPresentPartner;
+  Optional<Partner> optMissingPartner;
+  Partner partner = new Partner();
+  GetPartnerByApiController getPartnerByApiController;
+  Optional<Partner> optPartner;
 
   @Before
   public void setup() throws Exception {
@@ -48,11 +49,11 @@ public class GetPartnerByApiControllerTest {
     missingPartnerRequest = mock(Request.class);
     response = mock(Response.class);
     partner = mock(Partner.class);
+    optPresentPartner = Optional.of(partner);
+    optMissingPartner = Optional.empty();
 
     // real objects
     getPartnerByApiController = new GetPartnerByApiController();
-    optPresentPartner = Optional.of(partner);
-    optMissingPartner = Optional.empty();
 
     // returns
     when(missingPartnerRequest.params(":apiKey")).thenReturn("missing_apiKey");
