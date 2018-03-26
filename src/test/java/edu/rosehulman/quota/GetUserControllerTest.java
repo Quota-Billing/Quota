@@ -3,8 +3,11 @@ package edu.rosehulman.quota;
 import edu.rosehulman.quota.controller.GetUserController;
 import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.User;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -21,45 +24,110 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Database.class, Request.class, Response.class, User.class})
+@PrepareForTest({ Database.class, Request.class, Response.class, User.class })
 public class GetUserControllerTest {
 
-  @Test
-  public void testGetUser() throws Exception {
+  private Database database;
+  private Request request;
+  private Request badRequest;
+  private Request missingPartnerRequest;
+  private Request missingUserRequest;
+  private Response response;
+  private GetUserController getUserController;
+  private Optional<User> optPresentUser;
+  private Optional<User> optMissingUser;
+  private Optional<Partner> optPresentPartner;
+  private Optional<Partner> optMissingPartner;
+  private User user;
+  private Partner partner;
+
+  @Before
+  public void setUp() throws Exception {
+    // setup mocks
     mockStatic(Database.class);
-    Database database = mock(Database.class);
+    database = mock(Database.class);
+    request = mock(Request.class);
+    badRequest = mock(Request.class);
+    missingPartnerRequest = mock(Request.class);
+    missingUserRequest = mock(Request.class);
+    response = mock(Response.class);
+    partner = mock(Partner.class);
+    user = mock(User.class);
+
+    // real Objects
+    getUserController = new GetUserController();
+    optPresentUser = Optional.of(user);
+    optMissingUser = Optional.empty();
+    optPresentPartner = Optional.of(partner);
+    optMissingPartner = Optional.empty();
+
+    // returns
+    when(partner.getPartnerId()).thenReturn("partnerId");
+
+    when(user.getUserId()).thenReturn("userId");
+
     when(Database.getInstance()).thenReturn(database);
-
-    User user = mock(User.class);
-    Partner partner = mock(Partner.class);
-
-    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.of(partner));
-    when(partner.getPartnerId()).thenReturn("partner_id");
-
-    when(database.getUser("partner_id", "product_id", "user_id")).thenReturn(Optional.of(user));
-    when(database.getUser("partner_id", "product_id", "bad_user_id")).thenReturn(Optional.empty());
-
-    Request request = mock(Request.class);
     when(request.params(":apiKey")).thenReturn("apiKey");
-    when(request.params(":productId")).thenReturn("product_id");
-    when(request.params(":userId")).thenReturn("user_id");
-    Response response = mock(Response.class);
-    when(response.status()).thenReturn(200);
+    when(request.params(":productId")).thenReturn("productId");
+    when(request.params(":userId")).thenReturn("userId");
 
-    GetUserController getUserController = new GetUserController();
+    when(badRequest.params(":apiKey")).thenReturn("bad_apiKey");
+    when(badRequest.params(":productId")).thenReturn("productId");
+    when(badRequest.params(":userId")).thenReturn("userId");
 
-    getUserController.handle(request, response);
-    assertEquals(200, response.status());
+    when(missingPartnerRequest.params(":apiKey")).thenReturn("missing_apiKey");
+    when(missingPartnerRequest.params(":productId")).thenReturn("productId");
+    when(missingPartnerRequest.params(":userId")).thenReturn("userId");
 
-    when(request.params(":userId")).thenReturn("bad_user_id");
-    when(response.status()).thenReturn(404);
+    when(missingUserRequest.params(":apiKey")).thenReturn("apiKey");
+    when(missingUserRequest.params(":productId")).thenReturn("productId");
+    when(missingUserRequest.params(":userId")).thenReturn("missing_userID");
+    when(missingUserRequest.params(":quotaId")).thenReturn("quotaId");
 
+    when(database.getPartnerByApi("apiKey")).thenReturn(optPresentPartner);
+    when(database.getPartnerByApi("missing_apiKey")).thenReturn(optMissingPartner);
+    when(database.getUser("partnerId", "productId", "userId")).thenReturn(optPresentUser);
+    when(database.getUser("partnerId", "productId", "missing_userID")).thenReturn(optMissingUser);
+  }
+
+  @Test
+  public void testGetMissingPartner() throws Exception {
+    // execute
     try {
-      getUserController.handle(request, response);
+      getUserController.handle(missingPartnerRequest, response);
     } catch (HaltException e) {
-      assertEquals(404, response.status());
+      // verify
+      assertEquals(404, e.statusCode());
+      assertEquals("Missing Partner", e.body());
+      Mockito.verify(database);
       return;
     }
     fail("Exception not thrown");
   }
+
+  @Test
+  public void testGetMissingUser() throws Exception {
+    // execute
+    try {
+      getUserController.handle(missingUserRequest, response);
+    } catch (HaltException e) {
+      // verify
+      assertEquals(404, e.statusCode());
+      assertEquals("Missing User", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail("Exception not thrown");
+  }
+
+  @Test
+  public void testGetUser() throws Exception {
+    // execute
+    String actual = (String) getUserController.handle(request, response);
+
+    // verify
+    assertEquals("userId", actual);
+    Mockito.verify(database);
+  }
+
 }

@@ -105,7 +105,7 @@ public class GetQuotaSDKControllerTest {
     when(badRequest.params(":productId")).thenReturn("productId");
     when(badRequest.params(":userId")).thenReturn("userId");
     when(badRequest.params(":quotaId")).thenReturn("quotaId");
-    
+
     when(missingPartnerRequest.params(":apiKey")).thenReturn("missing_apiKey");
     when(missingPartnerRequest.params(":productId")).thenReturn("productId");
     when(missingPartnerRequest.params(":userId")).thenReturn("userId");
@@ -204,7 +204,6 @@ public class GetQuotaSDKControllerTest {
     // verify
     assertEquals(json.toString(), actual);
     Mockito.verify(database);
-
   }
 
   @Test(expected = Exception.class)
