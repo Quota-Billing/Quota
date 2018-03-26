@@ -27,23 +27,23 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @PrepareForTest({ Database.class, Request.class, Response.class, User.class })
 public class GetQuotaByApiControllerTest {
 
-  Database database;
-  Request request;
-  Request badRequest;
-  Request missingPartnerRequest;
-  Response response;
-  Optional<Partner> optPresentPartner;
-  Optional<Partner> optMissingPartner;
-  Partner partner = new Partner();
-  GetPartnerByApiController getPartnerByApiController;
-  Optional<Partner> optPartner;
+  private Database database;
+  private Request request;
+  private Request badRequest;
+  private Request missingPartnerRequest;
+  private Response response;
+  private Optional<Partner> optPresentPartner;
+  private Optional<Partner> optMissingPartner;
+  private Partner partner = new Partner();
+  private GetPartnerByApiController getPartnerByApiController;
+  private Optional<Partner> optPartner;
 
   @Before
-  public void setup() throws Exception {
+  public void setUp() throws Exception {
     // setup
     // mocks
     mockStatic(Database.class);
-    database = Mockito.mock(Database.class);
+    database = mock(Database.class);
     request = mock(Request.class);
     badRequest = mock(Request.class);
     missingPartnerRequest = mock(Request.class);

@@ -29,25 +29,25 @@ import java.util.Optional;
 @PrepareForTest({ Database.class, Request.class, Response.class, SharedServiceClient.class })
 public class AddUserControllerTest {
 
-  Database database;
-  SharedServiceClient shared;
-  Request request;
-  Response response;
-  AddUserController addUserController;
-  JsonObject body;
-  UserFactory factory;
-  User user;
-  User badUser;
-  User badSharedUser;
+  private Database database;
+  private SharedServiceClient shared;
+  private Request request;
+  private Response response;
+  private AddUserController addUserController;
+  private JsonObject body;
+  private UserFactory factory;
+  private User user;
+  private User badUser;
+  private User badSharedUser;
 
   @Before
-  public void setup() throws Exception {
+  public void setUp() throws Exception {
     // setup
     // mocks
     mockStatic(Database.class);
     mockStatic(SharedServiceClient.class);
-    database = Mockito.mock(Database.class);
-    shared = Mockito.mock(SharedServiceClient.class);
+    database = mock(Database.class);
+    shared = mock(SharedServiceClient.class);
     when(Database.getInstance()).thenReturn(database);
     when(SharedServiceClient.getInstance()).thenReturn(shared);
     request = mock(Request.class);
@@ -62,10 +62,10 @@ public class AddUserControllerTest {
     addUserController = new AddUserController(factory);
     when(factory.createUser("partnerId", "productId", "badUserId")).thenReturn(badUser);
     when(factory.createUser("partnerId", "productId", "badSharedUserId")).thenReturn(badSharedUser);
-    
+
     when(request.params(":apiKey")).thenReturn("apiKey");
     when(request.params(":productId")).thenReturn("productId");
-    
+
     Partner partner = new Partner();
     partner.setPartnerId("partnerId");
     Optional<Partner> option = Optional.of(partner);

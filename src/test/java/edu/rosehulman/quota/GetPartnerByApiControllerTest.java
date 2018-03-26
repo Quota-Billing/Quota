@@ -38,7 +38,7 @@ public class GetPartnerByApiControllerTest {
   private GetPartnerByApiController getPartnerByApiController;
 
   @Before
-  public void setup() throws Exception {
+  public void setUp() throws Exception {
     // setup
     // mocks
     mockStatic(Database.class);

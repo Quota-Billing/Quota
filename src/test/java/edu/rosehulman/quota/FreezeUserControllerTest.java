@@ -29,28 +29,28 @@ import java.util.Optional;
 @PrepareForTest({ Database.class, Request.class, Response.class })
 public class FreezeUserControllerTest {
 
-  Database database;
-  Request emptyBodyRequest;
-  Request unFreezeRequest;
-  Request missingUserRequest;
-  Request badRequest;
-  Response response;
-  Optional<User> optPresentUser;
-  Optional<User> optMissingUser;
-  Optional<User> optBadUser;
-  User user = new User();
-  User badUser = new User();
-  FreezeUserController freezeUserController;
-  Optional<Partner> optPartner;
-  Partner partner;
-  JsonObject body;
+  private Database database;
+  private Request emptyBodyRequest;
+  private Request unFreezeRequest;
+  private Request missingUserRequest;
+  private Request badRequest;
+  private Response response;
+  private Optional<User> optPresentUser;
+  private Optional<User> optMissingUser;
+  private Optional<User> optBadUser;
+  private User user = new User();
+  private User badUser = new User();
+  private FreezeUserController freezeUserController;
+  private Optional<Partner> optPartner;
+  private Partner partner;
+  private JsonObject body;
 
   @Before
-  public void setup() throws Exception {
+  public void setUp() throws Exception {
     // setup
     // mocks
     mockStatic(Database.class);
-    database = Mockito.mock(Database.class);
+    database = mock(Database.class);
     emptyBodyRequest = mock(Request.class);
     unFreezeRequest = mock(Request.class);
     badRequest = mock(Request.class);

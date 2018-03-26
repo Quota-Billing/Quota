@@ -25,23 +25,23 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @PrepareForTest({ Database.class, Request.class, Response.class })
 public class AddPartnerControllerTest {
 
-  Database database;
-  Request request;
-  Request badRequest;
-  Response response;
-  Partner partner;
-  Partner badPartner;
-  AddPartnerController addPartnerController;
-  JsonObject body;
-  JsonObject badBody;
-  PartnerFactory factory;
+  private Database database;
+  private Request request;
+  private Request badRequest;
+  private Response response;
+  private Partner partner;
+  private Partner badPartner;
+  private AddPartnerController addPartnerController;
+  private JsonObject body;
+  private JsonObject badBody;
+  private PartnerFactory factory;
 
   @Before
-  public void setup() throws Exception {
+  public void setUp() throws Exception {
     // setup
     // mocks
     mockStatic(Database.class);
-    database = Mockito.mock(Database.class);
+    database = mock(Database.class);
     request = mock(Request.class);
     badRequest = mock(Request.class);
     response = mock(Response.class);
