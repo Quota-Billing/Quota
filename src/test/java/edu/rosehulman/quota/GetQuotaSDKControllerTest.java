@@ -39,12 +39,12 @@ public class GetQuotaSDKControllerTest {
   private Request missingTierRequest;
   private Response response;
   private GetQuotaSDKController getQuotaSDKController;
-  private Optional<UserTier> optPresentUserTier;
-  private Optional<UserTier> optPresentUserTierMissingTier;
   private JsonObject json;
 
   @Before
   public void setUp() throws Exception {
+    Optional<UserTier> optPresentUserTier;
+    Optional<UserTier> optPresentUserTierMissingTier;
     Optional<Quota> optPresentQuota;
     Optional<Quota> optMissingQuota;
     Optional<Partner> optPresentPartner;
