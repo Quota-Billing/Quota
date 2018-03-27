@@ -11,10 +11,12 @@ import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import spark.HaltException;
 import spark.Request;
 import spark.Response;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -70,14 +72,22 @@ public class DeleteUserControllerTest {
     Mockito.verify(database);
   }
 
-  @Test(expected = Exception.class)
+  @Test
   public void testDeleteUserException() throws Exception {
     when(request.params(":userId")).thenReturn("badUserId");
     when(database.deleteUser("partnerId", "productId", "badUserId")).thenReturn(false);
     when(shared.deleteUser("partnerId", "productId", "badUserId")).thenReturn(true);
 
     // execute
-    deleteUserController.handle(request, response);
+    try {
+      deleteUserController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("Deleting user in database failed", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 
   @Test(expected = ServiceConfigurationError.class)
@@ -90,4 +100,19 @@ public class DeleteUserControllerTest {
     deleteUserController.handle(request, response);
   }
 
+  @Test
+  public void testNoPartner() throws Exception {
+    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.empty());
+    
+    // execute
+    try {
+      deleteUserController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("Partner not present", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
+  }
 }

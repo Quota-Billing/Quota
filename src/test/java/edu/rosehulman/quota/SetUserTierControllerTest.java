@@ -1,6 +1,7 @@
 package edu.rosehulman.quota;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -22,6 +23,7 @@ import edu.rosehulman.quota.controller.SetUserTierController;
 import edu.rosehulman.quota.factories.UserTierFactory;
 import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.UserTier;
+import spark.HaltException;
 import spark.Request;
 import spark.Response;
 
@@ -137,4 +139,19 @@ public class SetUserTierControllerTest {
     setUserTierController.handle(request, response);
   }
 
+  @Test
+  public void testNoPartner() throws Exception {
+    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.empty());
+    
+    // execute
+    try {
+      setUserTierController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("Partner not present", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
+  }
 }

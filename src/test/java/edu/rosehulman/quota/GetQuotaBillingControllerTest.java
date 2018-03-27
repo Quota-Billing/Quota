@@ -1,6 +1,7 @@
 package edu.rosehulman.quota;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -86,15 +87,23 @@ public class GetQuotaBillingControllerTest {
     Mockito.verify(database);
   }
 
-  @Test(expected = HaltException.class)
+  @Test
   public void testGetQuotaException() throws Exception {
     when(database.getQuota("partnerId", "productId", "quotaId")).thenReturn(Optional.empty());
 
     // execute
-    getQuotaBillingController.handle(request, response);
+    try {
+      getQuotaBillingController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("Quota not present", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 
-  @Test(expected = HaltException.class)
+  @Test
   public void testGetUserTierException() throws Exception {
     Optional<Quota> optionQuota = Optional.of(quota);
     when(database.getQuota("partnerId", "productId", "quotaId")).thenReturn(optionQuota);
@@ -102,10 +111,18 @@ public class GetQuotaBillingControllerTest {
     when(database.getUserTier("partnerId", "productId", "userId", "quotaId")).thenReturn(Optional.empty());
 
     // execute
-    getQuotaBillingController.handle(request, response);
+    try {
+      getQuotaBillingController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("User Tier not present", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 
-  @Test(expected = HaltException.class)
+  @Test
   public void testGetTierException() throws Exception {
     Optional<Quota> optionQuota = Optional.of(quota);
     when(database.getQuota("partnerId", "productId", "quotaId")).thenReturn(optionQuota);
@@ -116,7 +133,15 @@ public class GetQuotaBillingControllerTest {
     when(database.getTier("partnerId", "productId", "quotaId", "tierId")).thenReturn(Optional.empty());
     
     // execute
-    getQuotaBillingController.handle(request, response);
+    try {
+      getQuotaBillingController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("Tier not present", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 
 }

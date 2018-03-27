@@ -6,6 +6,7 @@ import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.Logging;
 import edu.rosehulman.quota.client.BillingClient;
 import edu.rosehulman.quota.factories.UserTierFactory;
+import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
 import spark.Response;
@@ -32,8 +33,12 @@ public class SetUserTierController implements Route {
     String quotaId = request.params(":quotaId");
     String tierId = request.params(":tierId");
 
-    String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
-
+    Optional<Partner> optPartner = Database.getInstance().getPartnerByApi(apiKey);
+    if (!optPartner.isPresent()) {
+      throw halt(404, "Partner not present");
+    }
+    String partnerId = optPartner.get().getPartnerId();
+    
     boolean keepCurrentValue = false;
     if (!request.body().isEmpty()) {
       JsonObject partnerJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();

@@ -15,10 +15,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.gson.JsonObject;
 
+import spark.HaltException;
 import spark.Request;
 import spark.Response;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -86,6 +88,22 @@ public class AddUserControllerTest {
     Mockito.verify(database);
   }
 
+  @Test
+  public void testNoPartner() throws Exception {
+    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.empty());
+    
+    // execute
+    try {
+      addUserController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("Partner not present", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
+  }
+
   @Test(expected = Exception.class)
   public void testAddUserException() throws Exception {
     body.addProperty("id", "badUserId");
@@ -108,5 +126,4 @@ public class AddUserControllerTest {
     // execute
     addUserController.handle(request, response);
   }
-
 }

@@ -1,6 +1,7 @@
 package edu.rosehulman.quota;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -73,12 +74,36 @@ public class SetQuotaControllerTest {
     Mockito.verify(database);
   }
 
-  @Test(expected = HaltException.class)
+  @Test
+  public void testNoPartner() throws Exception {
+    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.empty());
+    
+    // execute
+    try {
+      setQuotaController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("Partner not present", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
+  }
+
+  @Test
   public void testNoUserTier() throws Exception {
     when(database.getUserTier("partnerId", "productId", "userId", "quotaId")).thenReturn(Optional.empty());
 
     // execute
-    setQuotaController.handle(request, response);
+    try {
+      setQuotaController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("User not present", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 
   @Test
@@ -100,7 +125,7 @@ public class SetQuotaControllerTest {
     Mockito.verify(database);
   }
 
-  @Test(expected = HaltException.class)
+  @Test
   public void testDatabaseError() throws Exception {
     Optional<UserTier> optionUT = Optional.of(userTier);
     when(database.getUserTier("partnerId", "productId", "userId", "quotaId")).thenReturn(optionUT);
@@ -109,7 +134,15 @@ public class SetQuotaControllerTest {
     when(database.updateUserTier(userTier)).thenReturn(false);
     
     // execute
-    setQuotaController.handle(request, response);
+    try {
+      setQuotaController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(500, e.statusCode());
+      assertEquals("Database not updated", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 
 }

@@ -1,6 +1,7 @@
 package edu.rosehulman.quota;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -129,7 +130,7 @@ public class IncrementQuotaControllerTest {
     Mockito.verify(database);
   }
 
-  @Test(expected = HaltException.class)
+  @Test
   public void testIncrementDatabaseFail() throws Exception {
     Optional<User> optionUser = Optional.of(user);
     when(database.getUser("partnerId", "productId", "userId")).thenReturn(optionUser);
@@ -150,10 +151,18 @@ public class IncrementQuotaControllerTest {
     when(database.updateUserTier(userTier)).thenReturn(false);
 
     // execute
-    incrementQuotaController.handle(request, response);
+    try {
+      incrementQuotaController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(500, e.statusCode());
+      assertEquals("Database couldn't update", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 
-  @Test(expected = HaltException.class)
+  @Test
   public void testIncrementTimeAboveQuota() throws Exception {
     Optional<User> optionUser = Optional.of(user);
     when(database.getUser("partnerId", "productId", "userId")).thenReturn(optionUser);
@@ -180,10 +189,18 @@ public class IncrementQuotaControllerTest {
     mockStatic(BillingClient.class);
     BillingClient billing = mock(BillingClient.class);
     when(BillingClient.getInstance()).thenReturn(billing);
-    when(billing.quotaReached("partnerId", "productId", "userId", "quotaId", "tierId")).thenReturn("bill");
+    when(billing.quotaReached("partnerId", "productId", "userId", "quotaId", "tierId")).thenReturn("bill for time");
 
     // execute
-    incrementQuotaController.handle(request, response);
+    try {
+      incrementQuotaController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(403, e.statusCode());
+      assertEquals("bill for time", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 
   @Test
@@ -220,7 +237,7 @@ public class IncrementQuotaControllerTest {
     Mockito.verify(database);
   }
 
-  @Test(expected = HaltException.class)
+  @Test
   public void testIncrementStorageAboveQuota() throws Exception {
     Optional<User> optionUser = Optional.of(user);
     when(database.getUser("partnerId", "productId", "userId")).thenReturn(optionUser);
@@ -247,10 +264,18 @@ public class IncrementQuotaControllerTest {
     mockStatic(BillingClient.class);
     BillingClient billing = mock(BillingClient.class);
     when(BillingClient.getInstance()).thenReturn(billing);
-    when(billing.quotaReached("partnerId", "productId", "userId", "quotaId", "tierId")).thenReturn("bill");
+    when(billing.quotaReached("partnerId", "productId", "userId", "quotaId", "tierId")).thenReturn("bill for storage");
 
     // execute
-    incrementQuotaController.handle(request, response);
+    try {
+      incrementQuotaController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(403, e.statusCode());
+      assertEquals("bill for storage", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 
   @Test
@@ -345,7 +370,7 @@ public class IncrementQuotaControllerTest {
     // execute
     incrementQuotaController.handle(request, response);
   }
-  @Test(expected = HaltException.class)
+  @Test
   public void testAboveQuotaGoodBill() throws Exception {
     Optional<User> optionUser = Optional.of(user);
     when(database.getUser("partnerId", "productId", "userId")).thenReturn(optionUser);
@@ -364,13 +389,21 @@ public class IncrementQuotaControllerTest {
     mockStatic(BillingClient.class);
     BillingClient billing = mock(BillingClient.class);
     when(BillingClient.getInstance()).thenReturn(billing);
-    when(billing.quotaReached("partnerId", "productId", "userId", "quotaId", "tierId")).thenReturn("bill");
+    when(billing.quotaReached("partnerId", "productId", "userId", "quotaId", "tierId")).thenReturn("Good Bill");
     
     // execute
-    incrementQuotaController.handle(request, response);
+    try {
+      incrementQuotaController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(403, e.statusCode());
+      assertEquals("Good Bill", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 
-  @Test(expected = HaltException.class)
+  @Test
   public void testNoTier() throws Exception {
     Optional<User> optionUser = Optional.of(user);
     when(database.getUser("partnerId", "productId", "userId")).thenReturn(optionUser);
@@ -383,10 +416,18 @@ public class IncrementQuotaControllerTest {
     when(database.getTier("partnerId", "productId", "quotaId", "tierId")).thenReturn(Optional.empty());
 
     // execute
-    incrementQuotaController.handle(request, response);
+    try {
+      incrementQuotaController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("Tier not present", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 
-  @Test(expected = HaltException.class)
+  @Test
   public void testNoUserTier() throws Exception {
     Optional<User> optionUser = Optional.of(user);
     when(database.getUser("partnerId", "productId", "userId")).thenReturn(optionUser);
@@ -395,25 +436,66 @@ public class IncrementQuotaControllerTest {
     when(database.getUserTier("partnerId", "productId", "userId", "quotaId")).thenReturn(Optional.empty());
 
     // execute
-    incrementQuotaController.handle(request, response);
+    try {
+      incrementQuotaController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(403, e.statusCode());
+      JsonObject body = new JsonObject();
+      body.addProperty("tierNotSet", true);
+      assertEquals(body.toString(), e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 
-  @Test(expected = HaltException.class)
+  @Test
   public void testFrozenUser() throws Exception {
     Optional<User> optionUser = Optional.of(user);
     when(database.getUser("partnerId", "productId", "userId")).thenReturn(optionUser);
     when(user.isFrozen()).thenReturn(true);
 
     // execute
-    incrementQuotaController.handle(request, response);
+    try {
+      incrementQuotaController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(403, e.statusCode());
+      assertEquals("User frozen", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 
-  @Test(expected = HaltException.class)
+  @Test
   public void testNoUser() throws Exception {
     when(database.getUser("partnerId", "productId", "userId")).thenReturn(Optional.empty());
     
     // execute
-    incrementQuotaController.handle(request, response);
+    try {
+      incrementQuotaController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("User not present", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 
+  @Test
+  public void testNoPartner() throws Exception {
+    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.empty());
+    
+    // execute
+    try {
+      incrementQuotaController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("Partner not present", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
+  }
 }

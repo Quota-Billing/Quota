@@ -21,20 +21,20 @@ public class GetQuotaBillingController implements Route {
     String quotaId = request.params(":quotaId");
 
     if (!Database.getInstance().getQuota(partnerId, productId, quotaId).isPresent()) {
-      throw halt(404);
+      throw halt(404, "Quota not present");
     }
 
     JsonObject json = new JsonObject();
 
     Optional<UserTier> userTierOptional = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId);
     if (!userTierOptional.isPresent()) {
-      throw halt(404);
+      throw halt(404, "User Tier not present");
     }
     UserTier userTier = userTierOptional.get();
 
     Optional<Tier> tierOptional = Database.getInstance().getTier(partnerId, productId, quotaId, userTier.getTierId());
     if (!tierOptional.isPresent()) {
-      throw halt(404);
+      throw halt(404, "Tier not present");
     }
     Tier tier = tierOptional.get();
 
