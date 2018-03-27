@@ -34,10 +34,10 @@ public class AddPartnerControllerTest {
   private AddPartnerController addPartnerController;
   private JsonObject body;
   private JsonObject badBody;
-  private PartnerFactory factory;
 
   @Before
   public void setUp() throws Exception {
+    PartnerFactory factory;
     // setup
     // mocks
     mockStatic(Database.class);

@@ -39,24 +39,25 @@ public class GetQuotaSDKControllerTest {
   private Request missingTierRequest;
   private Response response;
   private GetQuotaSDKController getQuotaSDKController;
-  private Optional<Quota> optPresentQuota;
-  private Optional<Quota> optMissingQuota;
-  private Optional<Partner> optPresentPartner;
-  private Optional<Partner> optMissingPartner;
   private Optional<UserTier> optPresentUserTier;
   private Optional<UserTier> optPresentUserTierMissingTier;
-  private Optional<UserTier> optMissingUserTier;
-  private Optional<Tier> optPresentTier;
-  private Optional<Tier> optMissingTier;
-  private Quota quota;
-  private Partner partner;
-  private UserTier userTier;
-  private UserTier userTierMissingTier;
-  private Tier tier;
   private JsonObject json;
 
   @Before
   public void setUp() throws Exception {
+    Optional<Quota> optPresentQuota;
+    Optional<Quota> optMissingQuota;
+    Optional<Partner> optPresentPartner;
+    Optional<Partner> optMissingPartner;
+    Optional<UserTier> optMissingUserTier;
+    Optional<Tier> optPresentTier;
+    Optional<Tier> optMissingTier;
+    Quota quota;
+    Partner partner;
+    UserTier userTier;
+    UserTier userTierMissingTier;
+    Tier tier;
+
     // setup mocks
     mockStatic(Database.class);
     database = mock(Database.class);

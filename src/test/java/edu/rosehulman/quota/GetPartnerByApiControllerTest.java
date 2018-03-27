@@ -32,13 +32,14 @@ public class GetPartnerByApiControllerTest {
   private Request badRequest;
   private Request missingPartnerRequest;
   private Response response;
-  private Optional<Partner> optPresentPartner;
-  private Optional<Partner> optMissingPartner;
-  private Partner partner = new Partner();
   private GetPartnerByApiController getPartnerByApiController;
 
   @Before
   public void setUp() throws Exception {
+    Optional<Partner> optPresentPartner;
+    Optional<Partner> optMissingPartner;
+    Partner partner;
+
     // setup
     // mocks
     mockStatic(Database.class);

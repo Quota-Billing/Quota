@@ -34,15 +34,16 @@ public class GetUserControllerTest {
   private Request missingUserRequest;
   private Response response;
   private GetUserController getUserController;
-  private Optional<User> optPresentUser;
-  private Optional<User> optMissingUser;
-  private Optional<Partner> optPresentPartner;
-  private Optional<Partner> optMissingPartner;
-  private User user;
-  private Partner partner;
 
   @Before
   public void setUp() throws Exception {
+    Optional<User> optPresentUser;
+    Optional<User> optMissingUser;
+    Optional<Partner> optPresentPartner;
+    Optional<Partner> optMissingPartner;
+    User user;
+    Partner partner;
+    
     // setup mocks
     mockStatic(Database.class);
     database = mock(Database.class);

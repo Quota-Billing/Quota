@@ -35,18 +35,19 @@ public class FreezeUserControllerTest {
   private Request missingUserRequest;
   private Request badRequest;
   private Response response;
-  private Optional<User> optPresentUser;
-  private Optional<User> optMissingUser;
-  private Optional<User> optBadUser;
   private User user = new User();
   private User badUser = new User();
   private FreezeUserController freezeUserController;
-  private Optional<Partner> optPartner;
-  private Partner partner;
-  private JsonObject body;
 
   @Before
   public void setUp() throws Exception {
+    Optional<User> optPresentUser;
+    Optional<User> optMissingUser;
+    Optional<User> optBadUser;
+    Optional<Partner> optPartner;
+    Partner partner;
+    JsonObject body;
+
     // setup
     // mocks
     mockStatic(Database.class);
