@@ -15,6 +15,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.gson.JsonObject;
 
+import spark.HaltException;
 import spark.Request;
 import spark.Response;
 
@@ -24,6 +25,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.util.Optional;
+import java.util.ServiceConfigurationError;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Database.class, Request.class, Response.class, SharedServiceClient.class })
@@ -103,20 +105,16 @@ public class AddUserControllerTest {
     Mockito.verify(database);
   }
 
-  @Test(expected = Exception.class)
+  @Test(expected = ServiceConfigurationError.class)
   public void testAddUserSharedException() throws Exception {
     body.addProperty("id", "badSharedUserId");
     when(request.body()).thenReturn(body.toString());
     when(factory.createUser("partnerId", "productId", "badSharedUserId")).thenReturn(badSharedUser);
     when(shared.addUser("partnerId", "productId", "badSharedUserId")).thenReturn(false);
-    Mockito.doThrow(new Exception()).when(database).addUser(badSharedUser);
+    Mockito.doNothing().when(database).addUser(badSharedUser);
 
     // execute
-    String actualResponse = (String) addUserController.handle(request, response);
-
-    // verify
-    assertEquals("", actualResponse);
-    Mockito.verify(database);
+    addUserController.handle(request, response);
   }
 
 }
