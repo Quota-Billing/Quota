@@ -1,6 +1,8 @@
 package edu.rosehulman.quota;
 
 import edu.rosehulman.quota.controller.*;
+import edu.rosehulman.quota.factories.PartnerFactory;
+import edu.rosehulman.quota.factories.UserFactory;
 
 import static spark.Spark.*;
 
@@ -11,7 +13,7 @@ public class Application {
     get("/health", (request, response) -> "OK");
 
     // Consume an AddUser call from SDK/partner
-    post("partnerApi/:apiKey/product/:productId/user", new AddUserController());
+    post("partnerApi/:apiKey/product/:productId/user", new AddUserController(new UserFactory()));
 
     // Consume a (Un)FreezeUser call from Billing
     post("partnerApi/:apiKey/product/:productId/user/:userId", new FreezeUserController());
@@ -43,7 +45,7 @@ public class Application {
     // Consume a setUserTier call from SDK/partner
     put("/partnerApi/:apiKey/product/:productId/user/:userId/quota/:quotaId/tier/:tierId", new SetUserTierController());
 
-    post("/partner", new AddPartnerController());
+    post("/partner", new AddPartnerController(new PartnerFactory()));
 
     // try {
     // Partner partner = new Partner();

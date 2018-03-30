@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import edu.rosehulman.quota.Database;
 import edu.rosehulman.quota.Logging;
 import edu.rosehulman.quota.client.SharedServiceClient;
+import edu.rosehulman.quota.factories.UserFactory;
 import edu.rosehulman.quota.model.User;
 import org.apache.http.HttpException;
 import spark.Request;
@@ -14,6 +15,12 @@ import spark.Route;
 import static spark.Spark.halt;
 
 public class AddUserController implements Route {
+  
+  private UserFactory factory;
+
+  public AddUserController(UserFactory factory) {
+    this.factory = factory;
+  }
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
@@ -25,10 +32,7 @@ public class AddUserController implements Route {
     JsonObject userJsonObject = new JsonParser().parse(request.body()).getAsJsonObject();
     String userId = userJsonObject.get("id").getAsString();
 
-    User user = new User();
-    user.setPartnerId(partnerId);
-    user.setProductId(productId);
-    user.setUserId(userId);
+    User user = factory.createUser(partnerId, productId, userId);
 
     Database.getInstance().addUser(user);
 

@@ -1,49 +1,119 @@
 package edu.rosehulman.quota;
 
-//@RunWith(PowerMockRunner.class)
-//@PrepareForTest({Database.class, Request.class, Response.class, SharedServiceClient.class})
+import edu.rosehulman.quota.client.SharedServiceClient;
+import edu.rosehulman.quota.controller.AddUserController;
+import edu.rosehulman.quota.factories.UserFactory;
+import edu.rosehulman.quota.model.Partner;
+import edu.rosehulman.quota.model.User;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import com.google.gson.JsonObject;
+
+ import spark.Request;
+import spark.Response;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+
+import java.util.Optional;
+import java.util.ServiceConfigurationError;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ Database.class, Request.class, Response.class, SharedServiceClient.class })
 public class AddUserControllerTest {
 
-//  @Test
-//  public void testAddUser() throws Exception {
-//    mockStatic(Database.class);
-//    mockStatic(SharedServiceClient.class);
-//
-//    Database database = Mockito.mock(Database.class);
-//    when(Database.getInstance()).thenReturn(database);
-//    when(database.addUser("the_partner_id", "the_product_id", "the_user_id")).thenReturn(true);
-//    when(database.addUser("the_partner_id", "the_product_id", "shared_bad_user_id")).thenReturn(true);
-//    when(database.addUser("the_partner_id", "the_product_id", "bad_user_id")).thenReturn(false);
-//
-//    SharedServiceClient shared = Mockito.mock(SharedServiceClient.class);
-//    when(SharedServiceClient.getInstance()).thenReturn(shared);
-//    when(shared.addUser("the_partner_id", "the_product_id", "the_user_id")).thenReturn(true);
-//    when(shared.addUser("the_partner_id", "the_product_id", "shared_bad_user_id")).thenReturn(false);
-//
-//    AddUserController addUserController = new AddUserController();
-//
-//    Request request = mock(Request.class);
-//    when(request.params(":partnerId")).thenReturn("the_partner_id");
-//    when(request.params(":productId")).thenReturn("the_product_id");
-//    when(request.params(":userId")).thenReturn("the_user_id");
-//    Response response = mock(Response.class);
-//    when(response.status()).thenReturn(200);
-//
-//    Response actualResponse = (Response) addUserController.handle(request, response);
-//    assertEquals(200, actualResponse.status());
-//
-//    when(request.params(":userId")).thenReturn("bad_user_id");
-//    try {
-//      actualResponse = (Response) addUserController.handle(request, response);
-//      fail("Exception not thrown");
-//    } catch (Exception e) {
-//    }
-//
-//    when(request.params(":userId")).thenReturn("shared_bad_user_id");
-//    try {
-//      actualResponse = (Response) addUserController.handle(request, response);
-//      fail("Exception not thrown");
-//    } catch (Exception e) {
-//    }
-//  }
+  private Database database;
+  private SharedServiceClient shared;
+  private Request request;
+  private Response response;
+  private AddUserController addUserController;
+  private JsonObject body;
+  private UserFactory factory;
+  private User user;
+  private User badUser;
+  private User badSharedUser;
+
+  @Before
+  public void setUp() throws Exception {
+    // setup
+    // mocks
+    mockStatic(Database.class);
+    mockStatic(SharedServiceClient.class);
+    database = mock(Database.class);
+    shared = mock(SharedServiceClient.class);
+    when(Database.getInstance()).thenReturn(database);
+    when(SharedServiceClient.getInstance()).thenReturn(shared);
+    request = mock(Request.class);
+    response = mock(Response.class);
+    user = mock(User.class);
+    badUser = mock(User.class);
+    badSharedUser = mock(User.class);
+    factory = mock(UserFactory.class);
+
+    // real objects
+    body = new JsonObject();
+    addUserController = new AddUserController(factory);
+    when(factory.createUser("partnerId", "productId", "badUserId")).thenReturn(badUser);
+    when(factory.createUser("partnerId", "productId", "badSharedUserId")).thenReturn(badSharedUser);
+
+    when(request.params(":apiKey")).thenReturn("apiKey");
+    when(request.params(":productId")).thenReturn("productId");
+
+    Partner partner = new Partner();
+    partner.setPartnerId("partnerId");
+    Optional<Partner> option = Optional.of(partner);
+    when(database.getPartnerByApi("apiKey")).thenReturn(option);
+  }
+
+  @Test
+  public void testAddUser() throws Exception {
+    body.addProperty("id", "userId");
+    when(request.body()).thenReturn(body.toString());
+    when(factory.createUser("partnerId", "productId", "userId")).thenReturn(user);
+    when(shared.addUser("partnerId", "productId", "userId")).thenReturn(true);
+    Mockito.doNothing().when(database).addUser(user);
+
+    // execute
+    String actualResponse = (String) addUserController.handle(request, response);
+
+    // verify
+    assertEquals("", actualResponse);
+    Mockito.verify(database);
+  }
+
+  @Test(expected = Exception.class)
+  public void testAddUserException() throws Exception {
+    body.addProperty("id", "badUserId");
+    when(request.body()).thenReturn(body.toString());
+    when(factory.createUser("partnerId", "productId", "badUserId")).thenReturn(badUser);
+    Mockito.doThrow(new Exception()).when(database).addUser(badUser);
+
+    // execute
+    String actualResponse = (String) addUserController.handle(request, response);
+
+    // verify
+    assertEquals("", actualResponse);
+    Mockito.verify(database);
+  }
+
+  @Test(expected = ServiceConfigurationError.class)
+  public void testAddUserSharedException() throws Exception {
+    body.addProperty("id", "badSharedUserId");
+    when(request.body()).thenReturn(body.toString());
+    when(factory.createUser("partnerId", "productId", "badSharedUserId")).thenReturn(badSharedUser);
+    when(shared.addUser("partnerId", "productId", "badSharedUserId")).thenReturn(false);
+    Mockito.doNothing().when(database).addUser(badSharedUser);
+
+    // execute
+    addUserController.handle(request, response);
+  }
+
 }

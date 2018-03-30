@@ -8,10 +8,14 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.util.Optional;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import com.google.gson.JsonObject;
 
 import edu.rosehulman.quota.controller.GetQuotaSDKController;
 import edu.rosehulman.quota.model.Partner;
@@ -23,51 +27,192 @@ import spark.Request;
 import spark.Response;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Database.class, Request.class, Response.class})
+@PrepareForTest({ Database.class, Request.class, Response.class })
 public class GetQuotaSDKControllerTest {
 
-  @Test
-  public void testGetQuota() throws Exception {
+  private Database database;
+  private Request request;
+  private Request badRequest;
+  private Request missingPartnerRequest;
+  private Request missingQuotaRequest;
+  private Request missingUserTierRequest;
+  private Request missingTierRequest;
+  private Response response;
+  private GetQuotaSDKController getQuotaSDKController;
+  private JsonObject json;
+
+  @Before
+  public void setUp() throws Exception {
+    Optional<UserTier> optPresentUserTier;
+    Optional<UserTier> optPresentUserTierMissingTier;
+    Optional<Quota> optPresentQuota;
+    Optional<Quota> optMissingQuota;
+    Optional<Partner> optPresentPartner;
+    Optional<Partner> optMissingPartner;
+    Optional<UserTier> optMissingUserTier;
+    Optional<Tier> optPresentTier;
+    Optional<Tier> optMissingTier;
+    Quota quota;
+    Partner partner;
+    UserTier userTier;
+    UserTier userTierMissingTier;
+    Tier tier;
+
+    // setup mocks
     mockStatic(Database.class);
-    Database database = mock(Database.class);
+    database = mock(Database.class);
+    request = mock(Request.class);
+    badRequest = mock(Request.class);
+    missingPartnerRequest = mock(Request.class);
+    missingQuotaRequest = mock(Request.class);
+    missingUserTierRequest = mock(Request.class);
+    missingTierRequest = mock(Request.class);
+    response = mock(Response.class);
+    quota = mock(Quota.class);
+    partner = mock(Partner.class);
+    userTier = mock(UserTier.class);
+    userTierMissingTier = mock(UserTier.class);
+    tier = mock(Tier.class);
+
+    // real Objects
+    getQuotaSDKController = new GetQuotaSDKController();
+    optPresentQuota = Optional.of(quota);
+    optMissingQuota = Optional.empty();
+    optPresentPartner = Optional.of(partner);
+    optMissingPartner = Optional.empty();
+    optPresentUserTier = Optional.of(userTier);
+    optPresentUserTierMissingTier = Optional.of(userTierMissingTier);
+    optMissingUserTier = Optional.empty();
+    optPresentTier = Optional.of(tier);
+    optMissingTier = Optional.empty();
+    json = new JsonObject();
+
+    // returns
+    when(partner.getPartnerId()).thenReturn("partnerId");
+
+    when(userTier.getTierId()).thenReturn("tierId");
+    when(userTier.getValue()).thenReturn("52");
+    when(userTierMissingTier.getTierId()).thenReturn("missing_tierId");
+
+    when(tier.getMax()).thenReturn("100");
+
     when(Database.getInstance()).thenReturn(database);
-
-    Quota quota = mock(Quota.class);
-    Partner partner = mock(Partner.class);
-    UserTier userTier = mock(UserTier.class);
-    Tier tier = mock(Tier.class);
-
-    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.of(partner));
-    when(partner.getPartnerId()).thenReturn("partner_id");
-    when(userTier.getTierId()).thenReturn("tier_id");
-
-    when(database.getQuota("partner_id", "product_id", "quota_id")).thenReturn(Optional.of(quota));
-    when(database.getQuota("partner_id", "product_id", "bad_quota_id")).thenReturn(Optional.empty());
-    when(database.getUserTier("partner_id", "product_id", "user_id", "quota_id")).thenReturn(Optional.of(userTier));
-    when(database.getTier("partner_id", "product_id", "quota_id", "tier_id")).thenReturn(Optional.of(tier));
-
-    Request request = mock(Request.class);
     when(request.params(":apiKey")).thenReturn("apiKey");
-    when(request.params(":productId")).thenReturn("product_id");
-    when(request.params(":userId")).thenReturn("user_id");
-    when(request.params(":quotaId")).thenReturn("quota_id");
-    Response response = mock(Response.class);
-    when(response.status()).thenReturn(200);
+    when(request.params(":productId")).thenReturn("productId");
+    when(request.params(":userId")).thenReturn("userId");
+    when(request.params(":quotaId")).thenReturn("quotaId");
 
-    GetQuotaSDKController getQuotaController = new GetQuotaSDKController();
+    when(badRequest.params(":apiKey")).thenReturn("bad_apiKey");
+    when(badRequest.params(":productId")).thenReturn("productId");
+    when(badRequest.params(":userId")).thenReturn("userId");
+    when(badRequest.params(":quotaId")).thenReturn("quotaId");
 
-    getQuotaController.handle(request, response);
-    assertEquals(200, response.status());
+    when(missingPartnerRequest.params(":apiKey")).thenReturn("missing_apiKey");
+    when(missingPartnerRequest.params(":productId")).thenReturn("productId");
+    when(missingPartnerRequest.params(":userId")).thenReturn("userId");
+    when(missingPartnerRequest.params(":quotaId")).thenReturn("quotaId");
 
-    when(request.params(":quotaId")).thenReturn("bad_quota_id");
-    when(response.status()).thenReturn(404);
+    when(missingQuotaRequest.params(":apiKey")).thenReturn("apiKey");
+    when(missingQuotaRequest.params(":productId")).thenReturn("productId");
+    when(missingQuotaRequest.params(":userId")).thenReturn("userId");
+    when(missingQuotaRequest.params(":quotaId")).thenReturn("missing_quotaId");
 
+    when(missingUserTierRequest.params(":apiKey")).thenReturn("apiKey");
+    when(missingUserTierRequest.params(":productId")).thenReturn("productId");
+    when(missingUserTierRequest.params(":userId")).thenReturn("missing_userTier_userID");
+    when(missingUserTierRequest.params(":quotaId")).thenReturn("quotaId");
+
+    when(missingTierRequest.params(":apiKey")).thenReturn("apiKey");
+    when(missingTierRequest.params(":productId")).thenReturn("productId");
+    when(missingTierRequest.params(":userId")).thenReturn("userTier_missingTier_userID");
+    when(missingTierRequest.params(":quotaId")).thenReturn("quotaId");
+
+    when(database.getPartnerByApi("apiKey")).thenReturn(optPresentPartner);
+    when(database.getPartnerByApi("missing_apiKey")).thenReturn(optMissingPartner);
+    when(database.getQuota("partnerId", "productId", "quotaId")).thenReturn(optPresentQuota);
+    when(database.getQuota("partnerId", "productId", "missing_quotaId")).thenReturn(optMissingQuota);
+    when(database.getUserTier("partnerId", "productId", "userId", "quotaId")).thenReturn(optPresentUserTier);
+    when(database.getUserTier("partnerId", "productId", "userTier_missingTier_userID", "quotaId")).thenReturn(optPresentUserTierMissingTier);
+    when(database.getUserTier("partnerId", "productId", "missing_userTier_userID", "quotaId")).thenReturn(optMissingUserTier);
+    when(database.getTier("partnerId", "productId", "quotaId", "tierId")).thenReturn(optPresentTier);
+    when(database.getTier("partnerId", "productId", "quotaId", "missing_tierId")).thenReturn(optMissingTier);
+
+    when(userTier.getTierId()).thenReturn("tierId");
+  }
+
+  @Test
+  public void testGetMissingPartner() throws Exception {
+    // execute
     try {
-      getQuotaController.handle(request, response);
+      getQuotaSDKController.handle(missingPartnerRequest, response);
     } catch (HaltException e) {
-      assertEquals(404, response.status());
+      // verify
+      assertEquals(404, e.statusCode());
+      assertEquals("Missing Partner", e.body());
+      Mockito.verify(database);
       return;
     }
     fail("Exception not thrown");
+  }
+
+  @Test
+  public void testGetMissingQuota() throws Exception {
+    // execute
+    try {
+      getQuotaSDKController.handle(missingQuotaRequest, response);
+    } catch (HaltException e) {
+      // verify
+      assertEquals(404, e.statusCode());
+      assertEquals("Missing Quota", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail("Exception not thrown");
+  }
+
+  @Test
+  public void testGetMissingUserTier() throws Exception {
+    // execute
+    String actual = (String) getQuotaSDKController.handle(missingUserTierRequest, response);
+    json.addProperty("max", "0");
+    json.addProperty("value", "0");
+    // verify
+    assertEquals(json.toString(), actual);
+    Mockito.verify(database);
+  }
+
+  @Test
+  public void testGetMissingTier() throws Exception {
+    // execute
+    try {
+      getQuotaSDKController.handle(missingTierRequest, response);
+    } catch (HaltException e) {
+      // verify
+      assertEquals(404, e.statusCode());
+      assertEquals("Missing Tier", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail("Exception not thrown");
+  }
+
+  @Test
+  public void testGetQuota() throws Exception {
+    // execute
+    String actual = (String) getQuotaSDKController.handle(request, response);
+    json.addProperty("max", "100");
+    json.addProperty("value", "52");
+    // verify
+    assertEquals(json.toString(), actual);
+    Mockito.verify(database);
+  }
+
+  @Test(expected = Exception.class)
+  public void testGetQuotaUnsuccessfulGet() throws Exception {
+    Mockito.doThrow(new Exception()).when(database).getPartner("bad_apiKey");
+    // execute
+    getQuotaSDKController.handle(badRequest, response);
+    // verify
+    Mockito.verify(database);
   }
 }
