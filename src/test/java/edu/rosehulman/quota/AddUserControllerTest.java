@@ -15,10 +15,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.gson.JsonObject;
 
- import spark.Request;
+import spark.HaltException;
+import spark.Request;
 import spark.Response;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -27,7 +29,7 @@ import java.util.Optional;
 import java.util.ServiceConfigurationError;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Database.class, Request.class, Response.class, SharedServiceClient.class })
+@PrepareForTest({ Database.class, SharedServiceClient.class })
 public class AddUserControllerTest {
 
   private Database database;
@@ -43,12 +45,12 @@ public class AddUserControllerTest {
 
   @Before
   public void setUp() throws Exception {
-    // setup
-    // mocks
+    // Setup Mocks
     mockStatic(Database.class);
     mockStatic(SharedServiceClient.class);
     database = mock(Database.class);
     shared = mock(SharedServiceClient.class);
+
     when(Database.getInstance()).thenReturn(database);
     when(SharedServiceClient.getInstance()).thenReturn(shared);
     request = mock(Request.class);
@@ -57,19 +59,19 @@ public class AddUserControllerTest {
     badUser = mock(User.class);
     badSharedUser = mock(User.class);
     factory = mock(UserFactory.class);
+    Partner partner = mock(Partner.class);
 
-    // real objects
+    // Real Objects
     body = new JsonObject();
     addUserController = new AddUserController(factory);
-    when(factory.createUser("partnerId", "productId", "badUserId")).thenReturn(badUser);
-    when(factory.createUser("partnerId", "productId", "badSharedUserId")).thenReturn(badSharedUser);
-
+    Optional<Partner> option = Optional.of(partner);
+    
+    // Conditionals
+    when(Database.getInstance()).thenReturn(database);
+    when(SharedServiceClient.getInstance()).thenReturn(shared);
     when(request.params(":apiKey")).thenReturn("apiKey");
     when(request.params(":productId")).thenReturn("productId");
-
-    Partner partner = new Partner();
-    partner.setPartnerId("partnerId");
-    Optional<Partner> option = Optional.of(partner);
+    when(partner.getPartnerId()).thenReturn("partnerId");
     when(database.getPartnerByApi("apiKey")).thenReturn(option);
   }
 
@@ -89,6 +91,22 @@ public class AddUserControllerTest {
     Mockito.verify(database);
   }
 
+  @Test
+  public void testNoPartner() throws Exception {
+    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.empty());
+    
+    // execute
+    try {
+      addUserController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("Partner not present", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
+  }
+
   @Test(expected = Exception.class)
   public void testAddUserException() throws Exception {
     body.addProperty("id", "badUserId");
@@ -97,11 +115,7 @@ public class AddUserControllerTest {
     Mockito.doThrow(new Exception()).when(database).addUser(badUser);
 
     // execute
-    String actualResponse = (String) addUserController.handle(request, response);
-
-    // verify
-    assertEquals("", actualResponse);
-    Mockito.verify(database);
+    addUserController.handle(request, response);
   }
 
   @Test(expected = ServiceConfigurationError.class)
@@ -109,11 +123,10 @@ public class AddUserControllerTest {
     body.addProperty("id", "badSharedUserId");
     when(request.body()).thenReturn(body.toString());
     when(factory.createUser("partnerId", "productId", "badSharedUserId")).thenReturn(badSharedUser);
-    when(shared.addUser("partnerId", "productId", "badSharedUserId")).thenReturn(false);
     Mockito.doNothing().when(database).addUser(badSharedUser);
+    when(shared.addUser("partnerId", "productId", "badSharedUserId")).thenReturn(false);
 
     // execute
     addUserController.handle(request, response);
   }
-
 }

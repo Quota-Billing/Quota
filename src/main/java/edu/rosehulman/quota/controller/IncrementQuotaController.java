@@ -8,6 +8,7 @@ import edu.rosehulman.quota.Parser;
 import edu.rosehulman.quota.StorageParser;
 import edu.rosehulman.quota.TimeParser;
 import edu.rosehulman.quota.client.BillingClient;
+import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.Quota;
 import edu.rosehulman.quota.model.Tier;
 import edu.rosehulman.quota.model.User;
@@ -40,17 +41,21 @@ public class IncrementQuotaController implements Route {
     String userId = request.params(":userId");
     String quotaId = request.params(":quotaId");
 
-    String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
-
+    Optional<Partner> optPartner = Database.getInstance().getPartnerByApi(apiKey);
+    if (!optPartner.isPresent()) {
+      throw halt(404, "Partner not present");
+    }
+    String partnerId = optPartner.get().getPartnerId();
+    
     Optional<User> userOptional = Database.getInstance().getUser(partnerId, productId, userId);
     if (!userOptional.isPresent()) {
-      throw halt(404);
+      throw halt(404, "User not present");
     }
 
     User user = userOptional.get();
     // if user is frozen, cannot increment at all
     if (user.isFrozen()) {
-      throw halt(403);
+      throw halt(403, "User frozen");
     }
 
     Optional<UserTier> userTierOptional = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId);
@@ -61,7 +66,7 @@ public class IncrementQuotaController implements Route {
 
     Optional<Tier> tierOptional = Database.getInstance().getTier(partnerId, productId, quotaId, userTier.getTierId());
     if (!tierOptional.isPresent()) {
-      throw halt(404);
+      throw halt(404, "Tier not present");
     }
     Tier tier = tierOptional.get();
 
@@ -112,7 +117,7 @@ public class IncrementQuotaController implements Route {
     boolean updated = Database.getInstance().updateUserTier(userTier);
 
     if (!updated) {
-      throw halt(500);
+      throw halt(500, "Database couldn't update");
     }
 
     if (incrementedValue.compareTo(max) > 0) {

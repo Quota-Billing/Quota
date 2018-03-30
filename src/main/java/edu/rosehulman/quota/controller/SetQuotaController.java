@@ -1,6 +1,7 @@
 package edu.rosehulman.quota.controller;
 
 import edu.rosehulman.quota.Database;
+import edu.rosehulman.quota.model.Partner;
 import edu.rosehulman.quota.model.UserTier;
 import spark.Request;
 import spark.Response;
@@ -23,11 +24,15 @@ public class SetQuotaController implements Route {
     String userId = request.params(":userId");
     String quotaId = request.params(":quotaId");
 
-    String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
-
+    Optional<Partner> optPartner = Database.getInstance().getPartnerByApi(apiKey);
+    if (!optPartner.isPresent()) {
+      throw halt(404, "Partner not present");
+    }
+    String partnerId = optPartner.get().getPartnerId();
+    
     Optional<UserTier> userTierOptional = Database.getInstance().getUserTier(partnerId, productId, userId, quotaId);
     if (!userTierOptional.isPresent()) {
-      throw halt(404);
+      throw halt(404, "User not present");
     }
     UserTier userTier = userTierOptional.get();
     BigInteger resetValue = BigInteger.ZERO;
@@ -41,7 +46,7 @@ public class SetQuotaController implements Route {
     boolean updated = Database.getInstance().updateUserTier(userTier);
 
     if (!updated) {
-      throw halt(500);
+      throw halt(500, "Database not updated");
     }
 
     return "";

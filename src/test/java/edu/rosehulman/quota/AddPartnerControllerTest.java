@@ -37,7 +37,6 @@ public class AddPartnerControllerTest {
 
   @Before
   public void setUp() throws Exception {
-    PartnerFactory factory;
     // setup
     // mocks
     mockStatic(Database.class);
@@ -47,7 +46,7 @@ public class AddPartnerControllerTest {
     response = mock(Response.class);
     partner = mock(Partner.class);
     badPartner = mock(Partner.class);
-    factory = mock(PartnerFactory.class);
+    PartnerFactory factory = mock(PartnerFactory.class);
 
     // real objects
     addPartnerController = new AddPartnerController(factory);

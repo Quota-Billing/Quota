@@ -4,60 +4,115 @@ import edu.rosehulman.quota.client.SharedServiceClient;
 import edu.rosehulman.quota.controller.DeleteUserController;
 import edu.rosehulman.quota.model.Partner;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import spark.HaltException;
 import spark.Request;
 import spark.Response;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.util.Optional;
+import java.util.ServiceConfigurationError;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Database.class, Request.class, Response.class, SharedServiceClient.class })
 public class DeleteUserControllerTest {
 
-  @Test
-  public void testDeleteUser() throws Exception {
+  private Database database;
+  private SharedServiceClient shared;
+  private Request request;
+  private Response response;
+  private DeleteUserController deleteUserController;
+
+  @Before
+  public void setUp() throws Exception {
+    // Setup Mocks
     mockStatic(Database.class);
-    Database database = mock(Database.class);
-    when(Database.getInstance()).thenReturn(database);
-
-    DeleteUserController deleteUserController = new DeleteUserController();
-    Request request = mock(Request.class);
-    Response response = mock(Response.class);
-
-    when(request.params(":apiKey")).thenReturn("apiKey");
-    when(request.params(":productId")).thenReturn("prod_id1");
-    when(request.params(":userId")).thenReturn("user_id1");
-    when(response.status()).thenReturn(200);
-
+    mockStatic(SharedServiceClient.class);
+    database = mock(Database.class);
+    shared = mock(SharedServiceClient.class);
+    request = mock(Request.class);
+    response = mock(Response.class);
     Partner partner = mock(Partner.class);
 
-    when(partner.getPartnerId()).thenReturn("part_id1");
-    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.of(partner));
+    // Real Objects
+    deleteUserController = new DeleteUserController();
+    Optional<Partner> option = Optional.of(partner);
+    
+    // Conditionals
+    when(Database.getInstance()).thenReturn(database);
+    when(SharedServiceClient.getInstance()).thenReturn(shared);
+    when(request.params(":apiKey")).thenReturn("apiKey");
+    when(request.params(":productId")).thenReturn("productId");
+    when(partner.getPartnerId()).thenReturn("partnerId");
+    when(database.getPartnerByApi("apiKey")).thenReturn(option);
+  }
 
-    when(database.deleteUser("part_id1", "prod_id1", "user_id1")).thenReturn(true);
+  @Test
+  public void testDeleteUser() throws Exception {
+    when(request.params(":userId")).thenReturn("userId");
+    when(database.deleteUser("partnerId", "productId", "userId")).thenReturn(true);
+    when(shared.deleteUser("partnerId", "productId", "userId")).thenReturn(true);
 
-    mockStatic(SharedServiceClient.class);
-    SharedServiceClient client = mock(SharedServiceClient.class);
-    when(SharedServiceClient.getInstance()).thenReturn(client);
-    when(client.deleteUser("part_id1", "prod_id1", "user_id1")).thenReturn(true);
+    // execute
+    String actualResponse = (String) deleteUserController.handle(request, response);
 
+    // verify
+    assertEquals("", actualResponse);
+    Mockito.verify(database);
+  }
+
+  @Test
+  public void testDeleteUserException() throws Exception {
+    when(request.params(":userId")).thenReturn("badUserId");
+    when(database.deleteUser("partnerId", "productId", "badUserId")).thenReturn(false);
+    when(shared.deleteUser("partnerId", "productId", "badUserId")).thenReturn(true);
+
+    // execute
+    try {
+      deleteUserController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("Deleting user in database failed", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
+  }
+
+  @Test(expected = ServiceConfigurationError.class)
+  public void testDeleteUserSharedException() throws Exception {
+    when(request.params(":userId")).thenReturn("badSharedUserId");
+    when(database.deleteUser("partnerId", "productId", "badSharedUserId")).thenReturn(true);
+    when(shared.deleteUser("partnerId", "productId", "badUserId")).thenReturn(false);
+
+    // execute
     deleteUserController.handle(request, response);
+  }
 
-    assertEquals(200, response.status()); // or 202
-
-    when(request.params(":userId")).thenReturn("bad_user_id1");
-    when(response.status()).thenReturn(404);
-    when(client.deleteUser("part_id1", "prod_id1", "bad_user_id1")).thenReturn(false);
-
-    assertEquals(404, response.status());
+  @Test
+  public void testNoPartner() throws Exception {
+    when(database.getPartnerByApi("apiKey")).thenReturn(Optional.empty());
+    
+    // execute
+    try {
+      deleteUserController.handle(request, response);
+    } catch (HaltException e) {
+      assertEquals(404, e.statusCode());
+      assertEquals("Partner not present", e.body());
+      Mockito.verify(database);
+      return;
+    }
+    fail();
   }
 }
