@@ -15,8 +15,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.gson.JsonObject;
 
-import spark.HaltException;
-import spark.Request;
+ import spark.Request;
 import spark.Response;
 
 import static org.junit.Assert.assertEquals;
