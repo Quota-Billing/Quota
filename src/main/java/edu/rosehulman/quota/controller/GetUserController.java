@@ -1,11 +1,15 @@
 package edu.rosehulman.quota.controller;
 
 import edu.rosehulman.quota.Database;
+import edu.rosehulman.quota.model.Partner;
+import edu.rosehulman.quota.model.User;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
 import static spark.Spark.halt;
+
+import java.util.Optional;
 
 public class GetUserController implements Route {
 
@@ -15,12 +19,19 @@ public class GetUserController implements Route {
     String productId = request.params(":productId");
     String userId = request.params(":userId");
 
-    String partnerId = Database.getInstance().getPartnerByApi(apiKey).get().getPartnerId();
-
-    if (!Database.getInstance().getUser(partnerId, productId, userId).isPresent()) {
-      throw halt(404);
+    Optional<Partner> optPartner = Database.getInstance().getPartnerByApi(apiKey);
+    if (!optPartner.isPresent()) {
+      throw halt(404, "Missing Partner");
     }
 
-    return "";
+    String partnerId = optPartner.get().getPartnerId();
+
+    Optional<User> optUser = Database.getInstance().getUser(partnerId, productId, userId);
+
+    if (!optUser.isPresent()) {
+      throw halt(404, "Missing User");
+    }
+
+    return optUser.get().getUserId();
   }
 }

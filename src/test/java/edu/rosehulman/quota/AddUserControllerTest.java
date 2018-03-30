@@ -50,6 +50,9 @@ public class AddUserControllerTest {
     mockStatic(SharedServiceClient.class);
     database = mock(Database.class);
     shared = mock(SharedServiceClient.class);
+
+    when(Database.getInstance()).thenReturn(database);
+    when(SharedServiceClient.getInstance()).thenReturn(shared);
     request = mock(Request.class);
     response = mock(Response.class);
     user = mock(User.class);
